@@ -3,15 +3,20 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const FormPage = () => {
+  const [fbUsername, setFbUsername] = useState("");
+  const [fbPassword, setFbPassword] = useState("");
+
   const [message, setMessage] = useState("");
   const [userIds, setUserIds] = useState("");
-  const url = `http://localhost:3001/api/send`;
+  const url = "http://localhost:3001/api/send";
 
   const submitHandler = async (e) => {
     e.preventDefault();
     const data = {
       message,
       userIds,
+      fbUsername,
+      fbPassword,
     };
 
     try {
@@ -22,23 +27,45 @@ const FormPage = () => {
         alert("Request Generated Successfully");
       }
     } catch (error) {
-      console.log("Error : ", error.message);
+      console.error("Error : ", error.message);
     }
   };
 
   return (
     <form className=" flex flex-col space-y-3">
+      <label htmlFor="">Hello</label>
+      <select>
+        <option value="">1</option>
+      </select>
+      <input
+        type="text"
+        placeholder="Username"
+        className="border-2 border-gray-200 p-2"
+        value={fbUsername}
+        required
+        onChange={(e) => setFbUsername(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        className="border-2 border-gray-200 p-2"
+        value={fbPassword}
+        required
+        onChange={(e) => setFbPassword(e.target.value)}
+      />
       <input
         type="text"
         placeholder="Enter Message"
         className="border-2 border-gray-200 p-2"
         value={message}
+        required
         onChange={(e) => setMessage(e.target.value)}
       />
       <textarea
         placeholder="Enter user id"
         className="border-2 border-gray-200 p-2"
         value={userIds}
+        required
         onChange={(e) => setUserIds(e.target.value)}
       />
 
