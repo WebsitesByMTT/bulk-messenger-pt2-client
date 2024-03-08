@@ -8,7 +8,7 @@ const FormPage = () => {
 
   const [message, setMessage] = useState("");
   const [userIds, setUserIds] = useState("");
-  const url = "http://localhost:3001/api/send";
+  const url = process.env.NEXT_PUBLIC_SERVER_URL;
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -33,10 +33,6 @@ const FormPage = () => {
 
   return (
     <form className=" flex flex-col space-y-3">
-      <label htmlFor="">Hello</label>
-      <select>
-        <option value="">1</option>
-      </select>
       <input
         type="text"
         placeholder="Username"
