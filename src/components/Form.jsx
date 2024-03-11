@@ -8,7 +8,7 @@ const FormPage = () => {
 
   const [message, setMessage] = useState("");
   const [userIds, setUserIds] = useState("");
-  const url = process.env.NEXT_PUBLIC_SERVER_URL;
+  const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/send`;
 
   const submitHandler = async (e) => {
     e.preventDefault();
