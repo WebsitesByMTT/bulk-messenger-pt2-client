@@ -1,9 +1,17 @@
+"use client";
+import { motion } from "framer-motion";
+
 const History = () => {
   return (
-    <div className="mt-[150px] mx-auto w-[60%]">
+    <motion.div
+      className="mt-[150px] mx-auto w-[60%]"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
       <table className="w-full">
         <thead>
-          <tr className=" border-b-2 border-[#8C8C8C]">
+          <tr>
             <th>Message</th>
             <th>User ID</th>
             <th>Facebook ID</th>
@@ -17,7 +25,7 @@ const History = () => {
             <td>Rahul</td>
             <td>asdfghjk</td>
             <td>
-              <div className="flex items-center justify-center gap-[5px] bg-[#85c44191] rounded-md w-[70%] p-2 m-auto">
+              <div className="flex items-center justify-center gap-[5px] bg-[#85c44191] rounded-md w-[60%] px-2 py-1 m-auto">
                 <svg
                   width="7"
                   height="8"
@@ -38,7 +46,7 @@ const History = () => {
             <td>Rahul</td>
             <td>asdfghjk</td>
             <td>
-              <div className="flex items-center justify-center gap-[5px] bg-[#85c44191] rounded-md w-[70%] p-2 m-auto">
+              <div className="flex items-center justify-center gap-[5px] bg-[#85c44191] rounded-md  w-[60%] px-2 py-1  m-auto">
                 <svg
                   width="7"
                   height="8"
@@ -59,7 +67,7 @@ const History = () => {
             <td>Rahul</td>
             <td>asdfghjk</td>
             <td>
-              <div className="flex items-center justify-center gap-[5px] bg-[#ec202371] rounded-md w-[70%] p-2 m-auto">
+              <div className="flex items-center justify-center gap-[5px] bg-[#ec202371] rounded-md w-[60%] px-2 py-1  m-auto">
                 <svg
                   width="7"
                   height="8"
@@ -80,7 +88,7 @@ const History = () => {
             <td>Rahul</td>
             <td>asdfghjk</td>
             <td>
-              <div className="flex items-center justify-center gap-[5px] bg-[#ec202371] rounded-md w-[70%] p-2 m-auto">
+              <div className="flex items-center justify-center gap-[5px] bg-[#ec202371] rounded-md w-[60%] px-2 py-1  m-auto">
                 <svg
                   width="7"
                   height="8"
@@ -98,7 +106,7 @@ const History = () => {
           </tr>
         </tbody>
       </table>
-    </div>
+    </motion.div>
   );
 };
 

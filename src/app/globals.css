@@ -16,8 +16,6 @@
   }
 }
 
-
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -48,6 +46,10 @@ table td{
    font-weight: 500 !important;
   font-size: 1rem;
   color: #404040
+}
+
+table tr{
+  border-bottom: solid 1px #8C8C8C;
 }
 
 
