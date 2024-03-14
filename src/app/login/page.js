@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import LoginImage from "../../assets/LoginImage.png";
 import Image from "next/image";
 
-const page = () => {
+const Page = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/login`;
@@ -126,4 +126,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

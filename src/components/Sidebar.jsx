@@ -37,16 +37,16 @@ const Sidebar = () => {
             />
           </svg>
         </Link>
-        <ul className="text-white text-xl flex flex-col gap-[25px] mt-12">
-          <Link
-            href="/newmessage"
-            className="p-2 hover:bg-white hover:text-black rounded-tl-xl rounded-bl-xl transition-all duration-500 ease"
-          >
-            <li>New Message</li>
-          </Link>
+        <ul className="text-white text-xl flex flex-col gap-[5px] mt-12">
+            <Link
+              href="/newmessage"
+              className="p-2 hover:bg-white hover:text-black rounded-tl-xl hover:pr-8 hover:pl-4 overflow-hidden rounded-bl-xl transition-all duration-500 ease"
+            >
+              <li>New Message</li>
+            </Link>
           <Link
             href="/history"
-            className="p-2 hover:bg-white hover:text-black rounded-tl-xl rounded-bl-xl transition-all duration-500 ease"
+            className="p-2 hover:bg-white hover:text-black rounded-tl-xl hover:pr-8 hover:pl-4 overflow-hidden rounded-bl-xl transition-all duration-500 ease"
           >
             <li>History</li>
           </Link>
@@ -55,7 +55,7 @@ const Sidebar = () => {
       <div className="py-4 flex items-center justify-between border-t-[2px] border-[#8C8C8C] text-white mr-8">
         <div className="flex gap-[10px] w-[80%] items-center">
           <div className="w-[65px] h-[65px]">
-            <Image className="w-full h-full rounded-[100%]" src={LoginImage} />
+            <Image className="w-full h-full rounded-[100%]" src={LoginImage} alt="" />
           </div>
           <div>
             <h3 className="text-lg font-semibold">Abc Name</h3>
