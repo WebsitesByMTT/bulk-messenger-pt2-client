@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import LoginImage from "../../assets/LoginImage.png";
 import Image from "next/image";
 import Cookies from "js-cookie";
-const page = () => {
+const Page = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const handleChange = (e) => {
@@ -17,6 +17,7 @@ const page = () => {
     }));
   };
   const router = useRouter();
+  //login api
   const handleLogin = async (e) => {
     e.preventDefault();
     try {

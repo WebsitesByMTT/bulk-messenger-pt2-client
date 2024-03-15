@@ -1,16 +1,17 @@
 "use client";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { useRef, useState } from "react";
-import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import { getAllAgents } from "@/services/apiAuth";
+import { sendMessage } from "@/services/apiAuth";
 const NewMessage = () => {
   const [message, setMessage] = useState({
     message: "",
     userIds: "",
-    facebookId: "",
-    Password: "",
+    fbUsername: "",
+    fbPassword: "",
   });
-  const token = Cookies.get("token");
+
   function handleAgentMessage(e) {
     e.preventDefault();
     const { name, value } = e.target;
@@ -23,23 +24,8 @@ const NewMessage = () => {
   async function handleSend(e) {
     console.log(message);
     e.preventDefault();
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/send`,
-        message,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        console.log("Request Generated Successfully");
-      }
-    } catch (error) {
-      console.error("Error", error.message);
-    }
+    sendMessage(message);
+    setMessage({ message: "", userIds: "", fbUsername: "", fbPassword: "" });
   }
 
   return (
@@ -74,28 +60,28 @@ const NewMessage = () => {
           value={message.userIds}
           onChange={handleAgentMessage}
         ></textarea>
-        <lable className="text-lg font-semibold mt-2" htmlFor="facebookId">
+        <lable className="text-lg font-semibold mt-2" htmlFor="fbUsername">
           Facebook ID
         </lable>
         <input
           className="border-2 border-[#8C8C8C] rounded-md p-2"
-          name="facebookId"
+          name="fbUsername"
           placeholder="e.g, Gaurav Kumar"
           type="text"
           required
-          value={message.facebookId}
+          value={message.fbUsername}
           onChange={handleAgentMessage}
         />
-        <lable className="text-lg font-semibold mt-2" htmlFor="Password">
-          Password
+        <lable className="text-lg font-semibold mt-2" htmlFor="fbPassword">
+          fbPassword
         </lable>
         <input
           className="border-2 border-[#8C8C8C] rounded-md p-2"
-          name="Password"
+          name="fbPassword"
           placeholder="*********"
-          type="password"
+          type="fbPassword"
           required
-          value={message.Password}
+          value={message.fbPassword}
           onChange={handleAgentMessage}
         />
         <div className="flex justify-between items-center mt-6">
