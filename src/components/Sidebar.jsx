@@ -7,7 +7,13 @@ import { usePathname } from "next/navigation";
 const Sidebar = () => {
   const pathname = usePathname();
   return (
-    <div className="flex flex-col justify-between bg-[#252727] w-[20%] pl-8 h-screen min-w-[250px]">
+    <div
+      className={
+        pathname === "/login"
+          ? "hidden"
+          : "flex flex-col justify-between bg-[#252727] w-[20%] pl-8 h-screen min-w-[250px]"
+      }
+    >
       <div className="pt-10">
         <Link href="/">
           <svg

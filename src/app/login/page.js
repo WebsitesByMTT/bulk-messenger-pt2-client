@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import LoginImage from "../../assets/LoginImage.png";
 import Image from "next/image";
 import Cookies from "js-cookie";
+
 const Page = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
+  const role = Cookies.get("role");
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -27,7 +29,8 @@ const Page = () => {
       );
       if (response?.data?.token) {
         Cookies.set("token", response?.data?.token);
-        router.push("/newmessage");
+        Cookies.set("role", response?.data?.role);
+        router.push(`dashboard/${role.value}`);
       }
       setFormData({ username: "", password: "" });
       setError("");

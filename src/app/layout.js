@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
         className={inter.className}
         style={{ display: "flex", overflow: "hidden", height: "100vh" }}
       >
-        <Sidebar />
+        <Sidebar/>
         <div className="overflow-y-scroll h-screen flex-1 hideScrollbar">
           {children}
         </div>
