@@ -13,10 +13,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-          <body className={inter.className} style={{ display: "flex" }}>
-            <Sidebar/>
-            {children}
-          </body>
+      <body
+        className={inter.className}
+        style={{ display: "flex", overflow: "hidden", height: "100vh" }}
+      >
+        <Sidebar />
+        <div className="overflow-y-scroll h-screen flex-1 hideScrollbar">{children}</div>
+      </body>
     </html>
   );
 }

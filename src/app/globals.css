@@ -22,36 +22,51 @@
   }
 }
 
-h1{
+h1 {
   font-size: 2rem;
 }
 
-h4{
+h4 {
   font-size: 150%;
   font-weight: 600;
-
 }
-textarea:focus-visible, input:focus-visible{
+textarea:focus-visible,
+input:focus-visible,
+select:focus-visible {
   outline: none;
 }
 
-table th, td{
+table th,
+td {
   text-align: center;
   padding: 1rem;
   font-weight: 600;
   font-size: 1.2rem;
 }
 
-table td{
-   font-weight: 500 !important;
+table td {
+  font-weight: 500 !important;
   font-size: 1rem;
-  color: #404040
+  color: #404040;
 }
 
-table tr{
-  border-bottom: solid 1px #8C8C8C;
+table tr {
+  border-bottom: solid 1px #8c8c8c;
 }
 
+.hideScrollbar::-webkit-scrollbar {
+  display: none;
+}
 
+.hideScrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
+.created_at:hover .time {
+  display: none;
+}
 
+.created_at:hover .delete {
+  display: flex;
+}

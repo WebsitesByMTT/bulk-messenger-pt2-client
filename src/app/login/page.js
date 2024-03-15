@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import LoginImage from "../../assets/LoginImage.png";
 import Image from "next/image";
 import Cookies from "js-cookie";
-
 const page = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
@@ -17,7 +16,6 @@ const page = () => {
       [name]: value,
     }));
   };
-
   const router = useRouter();
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -147,4 +145,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
