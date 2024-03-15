@@ -1,12 +1,46 @@
 "use client";
+import axios from "axios";
 import { motion } from "framer-motion";
-import { useState } from "react";
-
+import { useRef, useState } from "react";
+import Cookies from "js-cookie";
 const NewMessage = () => {
-  const [message, setMessage] = useState("");
-  const [userId, setUserId] = useState("");
-  const [facebookId, setFacebookId] = useState("");
-  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState({
+    message: "",
+    userIds: "",
+    facebookId: "",
+    Password: "",
+  });
+  const token = Cookies.get("token");
+  function handleAgentMessage(e) {
+    e.preventDefault();
+    const { name, value } = e.target;
+    setMessage((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  }
+
+  async function handleSend(e) {
+    console.log(message);
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/send`,
+        message,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        console.log("Request Generated Successfully");
+      }
+    } catch (error) {
+      console.error("Error", error.message);
+    }
+  }
 
   return (
     <motion.div
@@ -15,7 +49,7 @@ const NewMessage = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <form className="flex flex-col gap-[5px]">
+      <form className="flex flex-col gap-[5px]" onSubmit={handleSend}>
         <lable className="text-lg font-semibold mt-2" htmlFor="message">
           Message
         </lable>
@@ -25,18 +59,20 @@ const NewMessage = () => {
           rows="6"
           placeholder="Enter Text"
           required
-          onChange={(e) => setMessage(e.target.value)}
+          value={message.message}
+          onChange={handleAgentMessage}
         ></textarea>
         <lable className="text-lg font-semibold mt-2" htmlFor="userId">
           User ID
         </lable>
         <textarea
           className="border-2 border-[#8C8C8C] rounded-md p-2 resize-none"
-          name="userId"
+          name="userIds"
           rows="10"
           placeholder="e.g, 123.1235842548"
           required
-          onChange={(e) => setUserId(e.target.value)}
+          value={message.userIds}
+          onChange={handleAgentMessage}
         ></textarea>
         <lable className="text-lg font-semibold mt-2" htmlFor="facebookId">
           Facebook ID
@@ -47,7 +83,8 @@ const NewMessage = () => {
           placeholder="e.g, Gaurav Kumar"
           type="text"
           required
-          onChange={(e) => setFacebookId(e.target.value)}
+          value={message.facebookId}
+          onChange={handleAgentMessage}
         />
         <lable className="text-lg font-semibold mt-2" htmlFor="Password">
           Password
@@ -58,7 +95,8 @@ const NewMessage = () => {
           placeholder="*********"
           type="password"
           required
-          onChange={(e) => setPassword(e.target.value)}
+          value={message.Password}
+          onChange={handleAgentMessage}
         />
         <div className="flex justify-between items-center mt-6">
           <button className="bg-[#252727] px-4 py-3 rounded-md font-semibold text-white w-fit hover:bg-[#1877F2]  transition-all duration-300 ease">

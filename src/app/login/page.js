@@ -4,31 +4,38 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import LoginImage from "../../assets/LoginImage.png";
 import Image from "next/image";
-
-const Page = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/login`;
-
+import Cookies from "js-cookie";
+const page = () => {
+  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [error, setError] = useState("");
+  const handleChange = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
   const router = useRouter();
-
-  async function onSubmit(event) {
-    event.preventDefault();
-
-    const data = { username, password };
-
+  const handleLogin = async (e) => {
+    e.preventDefault();
     try {
-      const response = await axios.post(url, data);
-
-      if (response.status === 200) {
-        const { token } = response.data;
-        localStorage.setItem("token", token);
-        router.push("/send-message");
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/users/login`,
+        formData
+      );
+      if (response?.data?.token) {
+        Cookies.set("token", response?.data?.token);
+        router.push("/newmessage");
       }
+      setFormData({ username: "", password: "" });
+      setError("");
     } catch (error) {
-      console.error("Error : ", error.message);
+      console.error("Login failed:", error);
+      setError("Invalid username or password.");
     }
-  }
+  };
+
   return (
     <>
       <div className="flex justify-between items-center w-screen h-screen p-10">
@@ -57,7 +64,10 @@ const Page = () => {
             <h4 className=" mt-10 mb-8 px-4">
               Welcome to <br /> BULK MESSENGER
             </h4>
-            <form className="flex flex-col gap-[25px] p-4">
+            <form
+              className="flex flex-col gap-[25px] p-4"
+              onSubmit={handleLogin}
+            >
               <div className="flex gap-[10px]  bg-[#E8E8E8] px-3 py-2 rounded-lg w-full">
                 <svg
                   width="10%"
@@ -78,10 +88,12 @@ const Page = () => {
 
                 <input
                   type="text"
+                  name="username"
                   placeholder="E-MAIL"
                   className="bg-transparent "
                   required
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={formData.username}
+                  onChange={handleChange}
                 />
               </div>
               <div className="flex gap-[10px] bg-[#E8E8E8] px-3 py-2 rounded-lg w-full">
@@ -105,11 +117,13 @@ const Page = () => {
                 </svg>
 
                 <input
-                  type="text"
+                  type="password"
+                  name="password"
                   placeholder="PASSWORD"
                   required
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handleChange}
                   className="bg-transparent"
+                  value={formData.password}
                 />
               </div>
               <button className="bg-[#1877F2] px-3 py-2 rounded-lg font-semibold text-white">
@@ -119,8 +133,13 @@ const Page = () => {
           </div>
         </div>
         <div className="w-[40%]">
-          <Image className="rounded-[50px] h-auto w-[90%]" src={LoginImage} alt="" />
+          <Image
+            className="rounded-[50px] h-auto w-[90%]"
+            src={LoginImage}
+            alt=""
+          />
         </div>
+        <div>{error}</div>
       </div>
     </>
   );
