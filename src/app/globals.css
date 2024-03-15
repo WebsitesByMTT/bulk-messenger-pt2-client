@@ -34,6 +34,8 @@ textarea:focus-visible,
 input:focus-visible,
 select:focus-visible {
   outline: none;
+-webkit-tap-highlight-color: transparent;
+
 }
 
 table th,
@@ -48,6 +50,7 @@ table td {
   font-weight: 500 !important;
   font-size: 1rem;
   color: #404040;
+  cursor: default;
 }
 
 table tr {
@@ -69,4 +72,13 @@ table tr {
 
 .created_at:hover .delete {
   display: flex;
+}
+
+
+input::-webkit-datetime-edit-day-field:focus,
+input::-webkit-datetime-edit-month-field:focus,
+input::-webkit-datetime-edit-year-field:focus {
+    background-color: transparent;
+    color: black;
+    outline: none;
 }

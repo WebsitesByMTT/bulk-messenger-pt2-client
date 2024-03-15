@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
         style={{ display: "flex", overflow: "hidden", height: "100vh" }}
       >
         <Sidebar />
-        <div className="overflow-y-scroll h-screen flex-1 hideScrollbar">{children}</div>
+        <div className="overflow-y-scroll h-screen flex-1 hideScrollbar min-w-[900px]">{children}</div>
       </body>
     </html>
   );

@@ -3,9 +3,18 @@ import Link from "next/link";
 import LoginImage from "../assets/LoginImage.png";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-
 const Sidebar = () => {
   const pathname = usePathname();
+  const sidebarList = [
+    {
+      name: "New Message",
+      link: "/newmessage",
+    },
+    {
+      name: "History",
+      link: "/history",
+    },
+  ];
   return (
     <div
       className={
@@ -15,7 +24,7 @@ const Sidebar = () => {
       }
     >
       <div className="pt-10">
-        <Link href="/">
+        <Link href="/newmessage">
           <svg
             width="90%"
             height="91"
@@ -38,31 +47,68 @@ const Sidebar = () => {
           </svg>
         </Link>
         <ul className="text-white text-xl flex flex-col gap-[5px] mt-12">
+          {sidebarList.map((route, index) => (
             <Link
-              href="/newmessage"
-              className="p-2 hover:bg-white hover:text-black rounded-tl-xl hover:pr-8 hover:pl-4 overflow-hidden rounded-bl-xl transition-all duration-500 ease"
+              key={index}
+              href={route.link}
+              className={`px-2 py-3 ${
+                pathname === route.link ? "bg-white text-black pr-8 pl-4" : ""
+              } rounded-tl-xl rounded-bl-xl transition-all duration-300 ease relative`}
             >
-              <li>New Message</li>
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 15 15"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className={`absolute top-[-15px] right-0 transition-all duration-200 ${
+                  pathname === route.link ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M15 15V0C15 8.2843 8.28427 15 0 15H15Z"
+                  fill="white"
+                />
+              </svg>
+              <li>{route.name}</li>
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 15 15"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className={`absolute bottom-[-15px] right-0 transition-all duration-200 ${
+                  pathname === route.link ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M15 0V15C15 6.71573 8.28427 0 0 0H15Z"
+                  fill="white"
+                />
+              </svg>
             </Link>
-          <Link
-            href="/history"
-            className="p-2 hover:bg-white hover:text-black rounded-tl-xl hover:pr-8 hover:pl-4 overflow-hidden rounded-bl-xl transition-all duration-500 ease"
-          >
-            <li>History</li>
-          </Link>
+          ))}
         </ul>
       </div>
       <div className="py-4 flex items-center justify-between border-t-[2px] border-[#8C8C8C] text-white mr-8">
-        <div className="flex gap-[10px] w-[80%] items-center">
-          <div className="w-[65px] h-[65px]">
-            <Image className="w-full h-full rounded-[100%]" src={LoginImage} alt="" />
+        <div className="flex gap-[10px] w-[90%] items-center">
+          <div className="w-[50px] h-[50px]">
+            <Image
+              className="w-full h-full rounded-[100%]"
+              src={LoginImage}
+              alt=""
+            />
           </div>
           <div>
             <h3 className="text-lg font-semibold">Abc Name</h3>
             <p>Abc Name</p>
           </div>
         </div>
-        <Link href="/login" className="w-[8%]">
+        <Link href="/login" className="w-[10%]">
           <svg
             width="100%"
             height="45%"

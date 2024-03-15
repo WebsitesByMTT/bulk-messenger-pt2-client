@@ -4,9 +4,75 @@ import { useState } from "react";
 
 const History = () => {
   const [searched, setSearched] = useState("");
+  const currentDate = new Date().toISOString().split("T")[0];
+  const historyData = [
+    {
+      id: "1",
+      message: "hi hello hey",
+      userId: "Rahul",
+      facebookId: "asdfghjkl",
+      status: "Accepted",
+      createdAt: "8:45 am",
+    },
+    {
+      id: "2",
+      message: "hi hello hey",
+      userId: "Rahul",
+      facebookId: "asdfghjkl",
+      status: "Rejected",
+      createdAt: "8:45 am",
+    },
+    {
+      id: "3",
+      message: "hi hello hey",
+      userId: "Rahul",
+      facebookId: "asdfghjkl",
+      status: "Rejected",
+      createdAt: "8:45 am",
+    },
+    {
+      id: "4",
+      message: "hi hello hey",
+      userId: "Rahul",
+      facebookId: "asdfghjkl",
+      status: "Rejected",
+      createdAt: "8:45 am",
+    },
+    {
+      id: "5",
+      message: "hi hello hey",
+      userId: "Rahul",
+      facebookId: "asdfghjkl",
+      status: "Rejected",
+      createdAt: "8:45 am",
+    },
+    {
+      id: "6",
+      message: "hi hello hey",
+      userId: "Rahul",
+      facebookId: "asdfghjkl",
+      status: "Rejected",
+      createdAt: "8:45 am",
+    },
+    {
+      id: "7",
+      message: "hi hello hey",
+      userId: "Rahul",
+      facebookId: "asdfghjkl",
+      status: "Rejected",
+      createdAt: "8:45 am",
+    },
+  ];
+
+  const [dataList, setDataList] = useState(historyData);
+
+  const handleDelete = (itemId) => {
+    console.log(dataList.length);
+    setDataList((prevData) => prevData.filter((item) => item.id !== itemId));
+  };
   return (
     <motion.div
-      className="mt-[100px] mx-auto w-[70%] flex flex-col gap-6"
+      className="mt-[100px] mx-auto w-[70%] flex flex-col gap-6 mb-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
@@ -33,130 +99,145 @@ const History = () => {
             onChange={(e) => setSearched(e.target.value)}
           />
         </div>
-        <div className="flex gap-4">
-          <svg
-            width="40%"
-            height="27"
-            viewBox="0 0 27 27"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="px-1 py-1 border-[#404040] border-[1.5px] rounded-lg"
-          >
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M7.20585 0.852905C6.78658 0.852905 6.38447 1.01946 6.088 1.31593C5.79153 1.61241 5.62497 2.01451 5.62497 2.43379V4.01467H4.04409C3.20554 4.01467 2.40133 4.34778 1.80838 4.94073C1.21544 5.53367 0.882324 6.33788 0.882324 7.17643V22.9853C0.882324 23.8238 1.21544 24.628 1.80838 25.221C2.40133 25.8139 3.20554 26.147 4.04409 26.147H23.0147C23.8532 26.147 24.6574 25.8139 25.2504 25.221C25.8433 24.628 26.1764 23.8238 26.1764 22.9853V7.17643C26.1764 6.33788 25.8433 5.53367 25.2504 4.94073C24.6574 4.34778 23.8532 4.01467 23.0147 4.01467H21.4338V2.43379C21.4338 2.01451 21.2672 1.61241 20.9708 1.31593C20.6743 1.01946 20.2722 0.852905 19.8529 0.852905C19.4336 0.852905 19.0315 1.01946 18.7351 1.31593C18.4386 1.61241 18.272 2.01451 18.272 2.43379V4.01467H8.78674V2.43379C8.78674 2.01451 8.62018 1.61241 8.32371 1.31593C8.02723 1.01946 7.62513 0.852905 7.20585 0.852905ZM7.20585 8.75732C6.78658 8.75732 6.38447 8.92387 6.088 9.22035C5.79153 9.51682 5.62497 9.91892 5.62497 10.3382C5.62497 10.7575 5.79153 11.1596 6.088 11.4561C6.38447 11.7525 6.78658 11.9191 7.20585 11.9191H19.8529C20.2722 11.9191 20.6743 11.7525 20.9708 11.4561C21.2672 11.1596 21.4338 10.7575 21.4338 10.3382C21.4338 9.91892 21.2672 9.51682 20.9708 9.22035C20.6743 8.92387 20.2722 8.75732 19.8529 8.75732H7.20585Z"
-              fill="#404040"
-            />
-          </svg>
-          <svg
-            width="35%"
-            height="27"
-            viewBox="0 0 24 27"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="px-1 border-[#404040] border-[1.5px] rounded-lg"
-          >
-            <path
-              d="M2.06721 21.4045C1.63596 21.4045 1.22236 21.571 0.917421 21.8675C0.612478 22.164 0.441162 22.5661 0.441162 22.9854C0.441162 23.4046 0.612478 23.8068 0.917421 24.1032C1.22236 24.3997 1.63596 24.5663 2.06721 24.5663H13.8853C14.1708 25.0469 14.5813 25.446 15.0757 25.7235C15.5701 26.0009 16.1308 26.147 16.7017 26.147C17.2725 26.147 17.8333 26.0009 18.3276 25.7235C18.822 25.446 19.2325 25.0469 19.518 24.5663H21.5798C22.0111 24.5663 22.4247 24.3997 22.7296 24.1032C23.0346 23.8068 23.2059 23.4046 23.2059 22.9854C23.2059 22.5661 23.0346 22.164 22.7296 21.8675C22.4247 21.571 22.0111 21.4045 21.5798 21.4045H19.518C19.2325 20.9238 18.822 20.5247 18.3276 20.2473C17.8333 19.9698 17.2725 19.8237 16.7017 19.8237C16.1308 19.8237 15.5701 19.9698 15.0757 20.2473C14.5813 20.5247 14.1708 20.9238 13.8853 21.4045H2.06721ZM2.06721 11.9191C1.63596 11.9191 1.22236 12.0856 0.917421 12.3821C0.612478 12.6786 0.441162 13.0807 0.441162 13.5C0.441162 13.9192 0.612478 14.3214 0.917421 14.6178C1.22236 14.9143 1.63596 15.0809 2.06721 15.0809H4.12904C4.41449 15.5615 4.82502 15.9606 5.31938 16.2381C5.81375 16.5155 6.37453 16.6616 6.94536 16.6616C7.5162 16.6616 8.07698 16.5155 8.57134 16.2381C9.06571 15.9606 9.47624 15.5615 9.76168 15.0809H21.5798C22.0111 15.0809 22.4247 14.9143 22.7296 14.6178C23.0346 14.3214 23.2059 13.9192 23.2059 13.5C23.2059 13.0807 23.0346 12.6786 22.7296 12.3821C22.4247 12.0856 22.0111 11.9191 21.5798 11.9191H9.76168C9.47624 11.4384 9.06571 11.0393 8.57134 10.7619C8.07698 10.4844 7.5162 10.3383 6.94536 10.3383C6.37453 10.3383 5.81375 10.4844 5.31938 10.7619C4.82502 11.0393 4.41449 11.4384 4.12904 11.9191H2.06721ZM0.441162 4.01457C0.441162 3.59529 0.612478 3.19318 0.917421 2.8967C1.22236 2.60022 1.63596 2.43367 2.06721 2.43367H13.8853C14.1708 1.95305 14.5813 1.55395 15.0757 1.27647C15.5701 0.998985 16.1308 0.852905 16.7017 0.852905C17.2725 0.852905 17.8333 0.998985 18.3276 1.27647C18.822 1.55395 19.2325 1.95305 19.518 2.43367H21.5798C22.0111 2.43367 22.4247 2.60022 22.7296 2.8967C23.0346 3.19318 23.2059 3.59529 23.2059 4.01457C23.2059 4.43385 23.0346 4.83595 22.7296 5.13243C22.4247 5.42891 22.0111 5.59547 21.5798 5.59547H19.518C19.2325 6.07608 18.822 6.47518 18.3276 6.75266C17.8333 7.03014 17.2725 7.17623 16.7017 7.17623C16.1308 7.17623 15.5701 7.03014 15.0757 6.75266C14.5813 6.47518 14.1708 6.07608 13.8853 5.59547H2.06721C1.63596 5.59547 1.22236 5.42891 0.917421 5.13243C0.612478 4.83595 0.441162 4.43385 0.441162 4.01457Z"
-              fill="#404040"
-            />
-          </svg>
+        <div>
+          <input
+            type="date"
+            name="date"
+            defaultValue={currentDate}
+            max={currentDate}
+            className="border-[#8C8C8C] border-2 p-1 rounded-lg"
+          />
         </div>
       </div>
-      <table className="w-full">
+      {dataList.length > 0 ? <table className="w-full">
         <thead>
           <tr>
             <th>Message</th>
             <th>User ID</th>
             <th>Facebook ID</th>
-            <th>Status</th>
-            <th>Created At</th>
+            <th>
+              <select className="p-2" value="Status">
+                <option hidden value="Status">
+                  Status
+                </option>
+                <option value="All">All</option>
+                <option value="Accepted">Accepted</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </th>
+            <th>
+              <select className="p-2" value="Created At">
+                <option hidden value="Created At">
+                  Created At
+                </option>
+                <option value="1">1-2</option>
+                <option value="2">2-3</option>
+                <option value="3">3-4</option>
+              </select>
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Hello hi hey</td>
-            <td>Rahul</td>
-            <td>asdfghjk</td>
-            <td>
-              <div className="flex items-center justify-center gap-[5px] bg-[#85c44191] rounded-md  w-[60%] px-2 py-1  m-auto">
-                <svg
-                  width="7"
-                  height="8"
-                  viewBox="0 0 7 8"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+          {dataList.map((data, index) => (
+            <tr key={data.id}>
+              <td>{data.message}</td>
+              <td>{data.userId}</td>
+              <td>{data.facebookId}</td>
+              <td>
+                <div
+                  className={`flex items-center justify-center gap-[5px] ${
+                    data.status === "Accepted"
+                      ? "bg-[#85c44191]"
+                      : "bg-[#ec202371]"
+                  } rounded-md w-fit px-2 py-1  m-auto`}
                 >
-                  <circle cx="3.5" cy="4" r="3.5" fill="#276956" />
-                </svg>
-
-                <span className="text-[#276956] font-semibold">Accepted</span>
-              </div>
-            </td>
-            <td className="created_at ">
-              <div className="time">8:45 am</div>
-              <button className="delete w-full h-full hidden justify-center items-center">
-                <svg
-                  width="23%"
-                  height="26"
-                  viewBox="0 0 24 26"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+                  <svg
+                    width="10%"
+                    height="8"
+                    viewBox="0 0 7 8"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="3.5"
+                      cy="4"
+                      r="3.5"
+                      fill={data.status === "Accepted" ? "#276956" : "#7F2600"}
+                    />
+                  </svg>
+                  <span
+                    className={`
+                      ${
+                        data.status === "Accepted"
+                          ? "text-[#276956]"
+                          : "text-[#7F2600]"
+                      } w-[90%]`}
+                  >
+                    {data.status}
+                  </span>
+                </div>
+              </td>
+              <td className="created_at">
+                <div className="time">{data.createdAt}</div>
+                <button
+                  className="delete w-full h-full hidden justify-center items-center"
+                  onClick={() => handleDelete(data.id)}
                 >
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M22.6667 3.9C23.403 3.9 24 4.48203 24 5.2C24 5.91797 23.403 6.5 22.6667 6.5H21.3333V21.45C21.3333 23.9629 19.244 26 16.6667 26H7.33333C4.756 26 2.66667 23.9629 2.66667 21.45V6.5H1.33333C0.596954 6.5 0 5.91797 0 5.2C0 4.48203 0.596954 3.9 1.33333 3.9H22.6667ZM18.6667 6.5H5.33333V20.8C5.33333 22.2359 6.52724 23.4 8 23.4H16C17.4728 23.4 18.6667 22.2359 18.6667 20.8V6.5ZM9.33333 9.1C10.0697 9.1 10.6667 9.68203 10.6667 10.4V18.2C10.6667 18.918 10.0697 19.5 9.33333 19.5C8.59695 19.5 8 18.918 8 18.2V10.4C8 9.68203 8.59695 9.1 9.33333 9.1ZM14.6667 9.1C15.403 9.1 16 9.68203 16 10.4V18.2C16 18.918 15.403 19.5 14.6667 19.5C13.9303 19.5 13.3333 18.918 13.3333 18.2V10.4C13.3333 9.68203 13.9303 9.1 14.6667 9.1ZM14.6667 0C15.403 0 16 0.58203 16 1.3C16 2.01797 15.403 2.6 14.6667 2.6H9.33333C8.59695 2.6 8 2.01797 8 1.3C8 0.58203 8.59695 0 9.33333 0H14.6667Z"
-                    fill="#EC2025"
-                  />
-                </svg>
-                <span>Delete</span>
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>Hello hi hey</td>
-            <td>Rahul</td>
-            <td>asdfghjk</td>
-            <td>
-              <div className="flex items-center justify-center gap-[5px] bg-[#ec202371] rounded-md w-[60%] px-2 py-1  m-auto">
-                <svg
-                  width="7"
-                  height="8"
-                  viewBox="0 0 7 8"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle cx="3.5" cy="4" r="3.5" fill="#7F2600" />
-                </svg>
-
-                <span className="text-[#7F2600] font-semibold">Rejected</span>
-              </div>
-            </td>
-            <td className="created_at ">
-              <div className="time">8:45 am</div>
-              <button className="delete w-full h-full hidden justify-center items-center">
-                <svg
-                  width="20%"
-                  height="26"
-                  viewBox="0 0 24 26"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M22.6667 3.9C23.403 3.9 24 4.48203 24 5.2C24 5.91797 23.403 6.5 22.6667 6.5H21.3333V21.45C21.3333 23.9629 19.244 26 16.6667 26H7.33333C4.756 26 2.66667 23.9629 2.66667 21.45V6.5H1.33333C0.596954 6.5 0 5.91797 0 5.2C0 4.48203 0.596954 3.9 1.33333 3.9H22.6667ZM18.6667 6.5H5.33333V20.8C5.33333 22.2359 6.52724 23.4 8 23.4H16C17.4728 23.4 18.6667 22.2359 18.6667 20.8V6.5ZM9.33333 9.1C10.0697 9.1 10.6667 9.68203 10.6667 10.4V18.2C10.6667 18.918 10.0697 19.5 9.33333 19.5C8.59695 19.5 8 18.918 8 18.2V10.4C8 9.68203 8.59695 9.1 9.33333 9.1ZM14.6667 9.1C15.403 9.1 16 9.68203 16 10.4V18.2C16 18.918 15.403 19.5 14.6667 19.5C13.9303 19.5 13.3333 18.918 13.3333 18.2V10.4C13.3333 9.68203 13.9303 9.1 14.6667 9.1ZM14.6667 0C15.403 0 16 0.58203 16 1.3C16 2.01797 15.403 2.6 14.6667 2.6H9.33333C8.59695 2.6 8 2.01797 8 1.3C8 0.58203 8.59695 0 9.33333 0H14.6667Z"
-                    fill="#EC2025"
-                  />
-                </svg>
-                <span>Delete</span>
-              </button>
-            </td>
-          </tr>
+                  <svg
+                    width="20%"
+                    height="26"
+                    viewBox="0 0 24 26"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M22.6667 3.9C23.403 3.9 24 4.48203 24 5.2C24 5.91797 23.403 6.5 22.6667 6.5H21.3333V21.45C21.3333 23.9629 19.244 26 16.6667 26H7.33333C4.756 26 2.66667 23.9629 2.66667 21.45V6.5H1.33333C0.596954 6.5 0 5.91797 0 5.2C0 4.48203 0.596954 3.9 1.33333 3.9H22.6667ZM18.6667 6.5H5.33333V20.8C5.33333 22.2359 6.52724 23.4 8 23.4H16C17.4728 23.4 18.6667 22.2359 18.6667 20.8V6.5ZM9.33333 9.1C10.0697 9.1 10.6667 9.68203 10.6667 10.4V18.2C10.6667 18.918 10.0697 19.5 9.33333 19.5C8.59695 19.5 8 18.918 8 18.2V10.4C8 9.68203 8.59695 9.1 9.33333 9.1ZM14.6667 9.1C15.403 9.1 16 9.68203 16 10.4V18.2C16 18.918 15.403 19.5 14.6667 19.5C13.9303 19.5 13.3333 18.918 13.3333 18.2V10.4C13.3333 9.68203 13.9303 9.1 14.6667 9.1ZM14.6667 0C15.403 0 16 0.58203 16 1.3C16 2.01797 15.403 2.6 14.6667 2.6H9.33333C8.59695 2.6 8 2.01797 8 1.3C8 0.58203 8.59695 0 9.33333 0H14.6667Z"
+                      fill="#EC2025"
+                    />
+                  </svg>
+                  <span>Delete</span>
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
-      </table>
+      </table> : <div className="m-auto mt-10 font-semibold text-xl"> No data to show here </div>}
+      {dataList.length > 100 && (
+        <div className="flex justify-end gap-[30px]">
+          <svg
+            width="9"
+            height="16"
+            viewBox="0 0 9 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8 15L1 8L8 1"
+              stroke="#404040"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <svg
+            width="9"
+            height="16"
+            viewBox="0 0 9 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 1L8 8L1 15"
+              stroke="#404040"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      )}
     </motion.div>
   );
 };
