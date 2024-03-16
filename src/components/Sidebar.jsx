@@ -47,6 +47,7 @@ const Sidebar = () => {
           </svg>
         </Link>
         <ul className="text-white text-xl flex flex-col gap-[5px] mt-12">
+
           {sidebarList.map((route, index) => (
             <Link
               key={index}
@@ -97,6 +98,7 @@ const Sidebar = () => {
       <div className="py-4 flex items-center justify-between border-t-[2px] border-[#8C8C8C] text-white mr-8">
         <div className="flex gap-[10px] w-[90%] items-center">
           <div className="w-[50px] h-[50px]">
+
             <Image
               className="w-full h-full rounded-[100%]"
               src={LoginImage}

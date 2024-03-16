@@ -1,9 +1,21 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { getAgentData } from "@/services/apiAuth";
 const History = () => {
+  useEffect(() => {
+    (async () => {
+      try {
+        const agentData = await getAgentData();
+        setData(agentData);
+      } catch (error) {
+        console.error("Error fetching agent data:", error);
+      }
+    })();
+  }, []);
+
   const [searched, setSearched] = useState("");
+
   const currentDate = new Date().toISOString().split("T")[0];
   const historyData = [
     {
@@ -70,6 +82,10 @@ const History = () => {
     console.log(dataList.length);
     setDataList((prevData) => prevData.filter((item) => item.id !== itemId));
   };
+
+  const [data, setData] = useState();
+  console.log(data);
+
   return (
     <motion.div
       className="mt-[100px] mx-auto w-[70%] flex flex-col gap-6 mb-6"
