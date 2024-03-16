@@ -30,7 +30,7 @@ const NewMessage = () => {
 
   return (
     <motion.div
-      className="m-auto my-12 w-[45%]"
+      className="m-auto mt-[5%] w-[45%]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
@@ -42,7 +42,7 @@ const NewMessage = () => {
         <textarea
           className="border-2 border-[#8C8C8C] rounded-md p-2 resize-none"
           name="message"
-          rows="6"
+          rows="5"
           placeholder="Enter Text"
           required
           value={message.message}
@@ -54,7 +54,7 @@ const NewMessage = () => {
         <textarea
           className="border-2 border-[#8C8C8C] rounded-md p-2 resize-none"
           name="userIds"
-          rows="10"
+          rows="8"
           placeholder="e.g, 123.1235842548"
           required
           value={message.userIds}
@@ -84,14 +84,14 @@ const NewMessage = () => {
           value={message.fbPassword}
           onChange={handleAgentMessage}
         />
-        <div className="flex justify-between items-center mt-6">
+        <div className="flex justify-between items-end mt-6">
           <button className="bg-[#252727] px-4 py-3 rounded-md font-semibold text-white w-fit hover:bg-[#1877F2]  transition-all duration-300 ease">
             SUBMIT
           </button>
-          <div className="flex gap-[10px] w-[40%]">
-            <div className="flex gap-[2px] p-1 border-[#8C8C8C] border-[1.5px] rounded-2xl justify-center">
+          <div className="flex gap-[10px] w-fit">
+            <div className="flex gap-[2px] p-1 border-[#8C8C8C] border-[1.5px] rounded-2xl justify-center w-[50%]">
               <svg
-                width="10%"
+                width="15%"
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
@@ -104,7 +104,7 @@ const NewMessage = () => {
                   fill="#404040"
                 />
               </svg>
-              <select className="text-sm">
+              <select className="text-sm w-[90%]">
                 <option disabled selected hidden value="">
                   Interval
                 </option>
@@ -115,7 +115,7 @@ const NewMessage = () => {
                 <option value="25">25 minutes</option>
               </select>
             </div>
-            <div className="flex gap-[2px] p-1 border-[#8C8C8C] border-[1.5px] rounded-2xl justify-center">
+            <div className="flex gap-[2px] p-1 border-[#8C8C8C] border-[1.5px] rounded-2xl justify-center w-[50%]">
               <svg
                 width="15%"
                 height="23"
@@ -130,7 +130,7 @@ const NewMessage = () => {
                   fill="#404040"
                 />
               </svg>
-              <select className="text-sm">
+              <select className="text-sm w-[85%]">
                 <option disabled selected hidden value="">
                   Count
                 </option>

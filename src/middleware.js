@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 export default function middleware(req) {
+
   const loggedin = req.cookies.get("token");
   const role = req.cookies.get("role");
   const { pathname } = req.nextUrl;
@@ -22,6 +23,7 @@ export default function middleware(req) {
   }
 
   return NextResponse.next();
+
 }
 
 export const config = {
