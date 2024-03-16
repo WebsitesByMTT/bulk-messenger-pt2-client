@@ -73,7 +73,7 @@ const History = () => {
       facebookId: "asdfghjkl",
       status: "Rejected",
       createdAt: "8:45 am",
-    },
+    }
   ];
 
   const [dataList, setDataList] = useState(historyData);
@@ -125,101 +125,110 @@ const History = () => {
           />
         </div>
       </div>
-      {dataList.length > 0 ? <table className="w-full">
-        <thead>
-          <tr>
-            <th>Message</th>
-            <th>User ID</th>
-            <th>Facebook ID</th>
-            <th>
-              <select className="p-2" value="Status">
-                <option hidden value="Status">
-                  Status
-                </option>
-                <option value="All">All</option>
-                <option value="Accepted">Accepted</option>
-                <option value="Rejected">Rejected</option>
-              </select>
-            </th>
-            <th>
-              <select className="p-2" value="Created At">
-                <option hidden value="Created At">
-                  Created At
-                </option>
-                <option value="1">1-2</option>
-                <option value="2">2-3</option>
-                <option value="3">3-4</option>
-              </select>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {dataList.map((data, index) => (
-            <tr key={data.id}>
-              <td>{data.message}</td>
-              <td>{data.userId}</td>
-              <td>{data.facebookId}</td>
-              <td>
-                <div
-                  className={`flex items-center justify-center gap-[5px] ${
-                    data.status === "Accepted"
-                      ? "bg-[#85c44191]"
-                      : "bg-[#ec202371]"
-                  } rounded-md w-fit px-2 py-1  m-auto`}
-                >
-                  <svg
-                    width="10%"
-                    height="8"
-                    viewBox="0 0 7 8"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+      {dataList.length > 0 ? (
+        <table className="w-full">
+          <thead>
+            <tr>
+              <th>Message</th>
+              <th>User ID</th>
+              <th>Facebook ID</th>
+              <th>
+                <select className="p-2" value="Status">
+                  <option hidden value="Status">
+                    Status
+                  </option>
+                  <option value="All">All</option>
+                  <option value="Accepted">Accepted</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </th>
+              <th>
+                <select className="p-2" value="Created At">
+                  <option hidden value="Created At">
+                    Created At
+                  </option>
+                  <option value="1">1-2</option>
+                  <option value="2">2-3</option>
+                  <option value="3">3-4</option>
+                </select>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {dataList.map((data, index) => (
+              <tr key={data.id}>
+                <td>{data.message}</td>
+                <td>{data.userId}</td>
+                <td>{data.facebookId}</td>
+                <td>
+                  <div
+                    className={`flex items-center justify-center gap-[5px] ${
+                      data.status === "Accepted"
+                        ? "bg-[#85c44191]"
+                        : "bg-[#ec202371]"
+                    } rounded-md w-fit px-2 py-1  m-auto`}
                   >
-                    <circle
-                      cx="3.5"
-                      cy="4"
-                      r="3.5"
-                      fill={data.status === "Accepted" ? "#276956" : "#7F2600"}
-                    />
-                  </svg>
-                  <span
-                    className={`
+                    <svg
+                      width="10%"
+                      height="8"
+                      viewBox="0 0 7 8"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <circle
+                        cx="3.5"
+                        cy="4"
+                        r="3.5"
+                        fill={
+                          data.status === "Accepted" ? "#276956" : "#7F2600"
+                        }
+                      />
+                    </svg>
+                    <span
+                      className={`
                       ${
                         data.status === "Accepted"
                           ? "text-[#276956]"
                           : "text-[#7F2600]"
                       } w-[90%]`}
+                    >
+                      {data.status}
+                    </span>
+                  </div>
+                </td>
+                <td className="created_at">
+                  <div className="time">{data.createdAt}</div>
+                  <button
+                    className="delete w-full h-full hidden justify-center items-center"
+                    onClick={() => handleDelete(data.id)}
                   >
-                    {data.status}
-                  </span>
-                </div>
-              </td>
-              <td className="created_at">
-                <div className="time">{data.createdAt}</div>
-                <button
-                  className="delete w-full h-full hidden justify-center items-center"
-                  onClick={() => handleDelete(data.id)}
-                >
-                  <svg
-                    width="20%"
-                    height="26"
-                    viewBox="0 0 24 26"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M22.6667 3.9C23.403 3.9 24 4.48203 24 5.2C24 5.91797 23.403 6.5 22.6667 6.5H21.3333V21.45C21.3333 23.9629 19.244 26 16.6667 26H7.33333C4.756 26 2.66667 23.9629 2.66667 21.45V6.5H1.33333C0.596954 6.5 0 5.91797 0 5.2C0 4.48203 0.596954 3.9 1.33333 3.9H22.6667ZM18.6667 6.5H5.33333V20.8C5.33333 22.2359 6.52724 23.4 8 23.4H16C17.4728 23.4 18.6667 22.2359 18.6667 20.8V6.5ZM9.33333 9.1C10.0697 9.1 10.6667 9.68203 10.6667 10.4V18.2C10.6667 18.918 10.0697 19.5 9.33333 19.5C8.59695 19.5 8 18.918 8 18.2V10.4C8 9.68203 8.59695 9.1 9.33333 9.1ZM14.6667 9.1C15.403 9.1 16 9.68203 16 10.4V18.2C16 18.918 15.403 19.5 14.6667 19.5C13.9303 19.5 13.3333 18.918 13.3333 18.2V10.4C13.3333 9.68203 13.9303 9.1 14.6667 9.1ZM14.6667 0C15.403 0 16 0.58203 16 1.3C16 2.01797 15.403 2.6 14.6667 2.6H9.33333C8.59695 2.6 8 2.01797 8 1.3C8 0.58203 8.59695 0 9.33333 0H14.6667Z"
-                      fill="#EC2025"
-                    />
-                  </svg>
-                  <span>Delete</span>
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table> : <div className="m-auto mt-10 font-semibold text-xl"> No data to show here </div>}
+                    <svg
+                      width="20%"
+                      height="26"
+                      viewBox="0 0 24 26"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M22.6667 3.9C23.403 3.9 24 4.48203 24 5.2C24 5.91797 23.403 6.5 22.6667 6.5H21.3333V21.45C21.3333 23.9629 19.244 26 16.6667 26H7.33333C4.756 26 2.66667 23.9629 2.66667 21.45V6.5H1.33333C0.596954 6.5 0 5.91797 0 5.2C0 4.48203 0.596954 3.9 1.33333 3.9H22.6667ZM18.6667 6.5H5.33333V20.8C5.33333 22.2359 6.52724 23.4 8 23.4H16C17.4728 23.4 18.6667 22.2359 18.6667 20.8V6.5ZM9.33333 9.1C10.0697 9.1 10.6667 9.68203 10.6667 10.4V18.2C10.6667 18.918 10.0697 19.5 9.33333 19.5C8.59695 19.5 8 18.918 8 18.2V10.4C8 9.68203 8.59695 9.1 9.33333 9.1ZM14.6667 9.1C15.403 9.1 16 9.68203 16 10.4V18.2C16 18.918 15.403 19.5 14.6667 19.5C13.9303 19.5 13.3333 18.918 13.3333 18.2V10.4C13.3333 9.68203 13.9303 9.1 14.6667 9.1ZM14.6667 0C15.403 0 16 0.58203 16 1.3C16 2.01797 15.403 2.6 14.6667 2.6H9.33333C8.59695 2.6 8 2.01797 8 1.3C8 0.58203 8.59695 0 9.33333 0H14.6667Z"
+                        fill="#EC2025"
+                      />
+                    </svg>
+                    <span>Delete</span>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div className="m-auto mt-10 font-semibold text-xl">
+          {" "}
+          No data to show here{" "}
+        </div>
+      )}
       {dataList.length > 100 && (
         <div className="flex justify-end gap-[30px]">
           <svg

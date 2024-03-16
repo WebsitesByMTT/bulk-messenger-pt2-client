@@ -10,6 +10,7 @@ const Page = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const role = Cookies.get("role");
+
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -18,6 +19,7 @@ const Page = () => {
       [name]: value,
     }));
   };
+  
   const router = useRouter();
   //login api
   const handleLogin = async (e) => {
