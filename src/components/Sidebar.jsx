@@ -37,7 +37,7 @@ const Sidebar = () => {
         },
         {
           name: "History",
-          link: "/history",
+          link: "/message",
         }
       );
       break;

@@ -1,12 +1,36 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState } from "react";
-
+import { createUsers } from "../lib/api";
 export const page = () => {
   const [selectedRole, setSelectedRole] = useState("");
+  const [message, setMessage] = useState({
+    username: "",
+    name: "",
+    password: "",
+    role: selectedRole,
+    keys: "",
+  });
+
   const handleChange = (e) => {
     setSelectedRole(e.target.value);
   };
+
+  function handleAgentMessage(e) {
+    e.preventDefault();
+    const { name, value } = e.target;
+    setMessage((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  }
+
+  async function handleSend(e) {
+    console.log(message);
+    e.preventDefault();
+    createUsers(message);
+    setMessage({ username: "", name: "", password: "", role: "", keys: "" });
+  }
   return (
     <motion.div
       className="m-auto mt-[10%] w-[35%]"
@@ -14,7 +38,7 @@ export const page = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <form className="flex flex-col gap-[5px]">
+      <form className="flex flex-col gap-[5px]" onSubmit={handleSend}>
         <lable className="text-lg font-semibold mt-2" htmlFor="name">
           Name
         </lable>
@@ -23,8 +47,8 @@ export const page = () => {
           name="name"
           placeholder="Enter Name"
           required
-          // value={message.message}
-          // onChange={handleAgentMessage}
+          value={message.name}
+          onChange={handleAgentMessage}
         ></input>
         <lable className="text-lg font-semibold mt-2" htmlFor="username">
           Username
@@ -34,35 +58,36 @@ export const page = () => {
           name="username"
           placeholder="e.g, Rahul"
           required
-          // value={message.userIds}
-          // onChange={handleAgentMessage}
+          value={message.username}
+          onChange={handleAgentMessage}
         ></input>
         <lable className="text-lg font-semibold mt-2" htmlFor="password">
           Password
         </lable>
         <input
           className="border-2 border-[#8C8C8C] rounded-md p-2"
-          name="Password"
+          name="password"
           placeholder="*********"
           type="Password"
           required
-          // value={message.fbPassword}
-          // onChange={handleAgentMessage}
+          value={message.password}
+          onChange={handleAgentMessage}
         />
         {selectedRole === "admin" && (
           <input
             className="border-2 border-[#8C8C8C] rounded-md p-2 mt-4"
-            name="Password"
+            name="keys"
             placeholder="API key"
             required
-            // value={message.fbPassword}
-            // onChange={handleAgentMessage}
+            value={message.keys}
+            onChange={handleAgentMessage}
           />
         )}
         <select
           className="text-sm mt-6 w-fit border-[#8C8C8C] border-[1px] p-1 rounded-2xl"
-          value={selectedRole}
           onChange={handleChange}
+          name="role"
+          value={message.role}
         >
           <option hidden value="role">
             Role

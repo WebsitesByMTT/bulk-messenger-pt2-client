@@ -1,6 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 const token = Cookies.get("token");
+const username=Cookies.get("username")
 const headers = {
   headers: {
     "Content-Type": "application/json",
@@ -39,7 +40,7 @@ async function getAllAgents() {
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/agents`,
       headers
     );
-    return response?.data?.users;
+    return response?.data?.agents;
   } catch (error) {
     console.error("Error", error.message);
   }
@@ -48,7 +49,7 @@ async function getAllAgents() {
 async function getAllMessagesByUsername() {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/agents`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/messages`,
       headers,
       {
         params: {
@@ -56,11 +57,25 @@ async function getAllMessagesByUsername() {
         },
       }
     );
-    return response?.data?.users;
+    return response?.data?.data;
   } catch (error) {
     console.error("Error", error.message);
   }
 }
+
+async function getAllMessages() {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/messages`,
+      headers
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error", error.message);
+  }
+}
+
+
 
 async function createUsers(formData) {
   try {
@@ -109,4 +124,5 @@ export {
   getAllAgents,
   getAllMessagesByUsername,
   createUsers,
+  getAllMessages
 };

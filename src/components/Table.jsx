@@ -1,44 +1,70 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { usePathname } from "next/navigation";
-const Table = ({ tableData }) => {
+import {
+  getAllAgents,
+  getAllMessages,
+  getAllMessagesByUsername,
+} from "@/app/lib/api";
+
+const Table = () => {
   const pathname = usePathname();
-  console.log(pathname);
   const role = Cookies.get("role");
   const [searched, setSearched] = useState("");
+  const [tableData, SetTableData] = useState([]);
+  const [tableHeaders, setTableHeaders] = useState([]);
+  const [dataFields, setDataFields] = useState([]);
   const currentDate = new Date().toISOString().split("T")[0];
-  let tableHeaders = [];
-  let dataFields = [];
-  switch (role) {
-    case "admin":
-      switch (pathname) {
-        case "/message":
-          tableHeaders = ["Agent", "Sent From", "Sent to", "Message"];
-          dataFields = ["agent", "sentFrom", "sentTo", "message"];
-          break;
-        case "/agents":
-          tableHeaders = ["Name", "User Name", "Password"];
-          dataFields = ["name", "username", "password"];
-          break;
+
+  //getAllAgents
+  function fetch(para) {
+    (async () => {
+      try {
+        const agentData = await para();
+        SetTableData(agentData);
+        console.log(agentData)
+      } catch (error) {
+        console.error("Error fetching agent data:", error);
       }
-      break;
-
-    case "agent":
-      tableHeaders = ["Message", "User ID", "Facebook Id"];
-      dataFields = ["message", "userId", "facebookId"];
-      break;
-
-    default:
-      // Handle any other roles or no role specified
-      break;
+    })();
   }
 
-  const [dataList, setDataList] = useState(tableData);
+  useEffect(() => {
+    switch (role) {
+      case "admin":
+        switch (pathname) {
+          case "/message":
+            setTableHeaders(["Agent", "Sent From", "Sent to", "Message"]);
+            setDataFields(["agent", "sentFrom", "sentTo", "message"]);
+            fetch(getAllMessages);
+            break;
+          case "/agents":
+            setTableHeaders(["Name", "User Name", "Password"]);
+            setDataFields(["name", "username", "password"]);
+            fetch(getAllAgents);
+            break;
+        }
+        break;
+
+      case "agent":
+        switch (pathname) {
+          case "/message":
+            setTableHeaders(["Message", "User ID", "Facebook Id"]);
+            setDataFields(["message", "userId", "facebookId"]);
+            fetch(getAllMessagesByUsername);
+            break;
+        }
+        break;
+
+      default:
+        break;
+    }
+  }, [role, pathname]);
 
   const handleDelete = (itemId) => {
-    setDataList((prevData) => prevData.filter((item) => item.id !== itemId));
+    settableData((prevData) => prevData.filter((item) => item.id !== itemId));
   };
 
   return (
@@ -80,7 +106,7 @@ const Table = ({ tableData }) => {
           />
         </div>
       </div>
-      {dataList.length > 0 ? (
+      {tableData.length > 0 ? (
         <table className="w-full">
           <thead>
             <tr>
@@ -112,7 +138,7 @@ const Table = ({ tableData }) => {
             </tr>
           </thead>
           <tbody>
-            {dataList.map((data) => (
+            {tableData.map((data) => (
               <tr key={data.id}>
                 {dataFields.map((field, index) => (
                   <td key={index}>{data[field]}</td>
@@ -156,7 +182,7 @@ const Table = ({ tableData }) => {
                   </td>
                 )}
                 <td className="created_at">
-                  <div className="time">{data.createdAt}</div>
+                  <div className="time">{data.created_at}</div>
                   <button
                     className="delete w-full h-full hidden justify-center items-center"
                     onClick={() => handleDelete(data.id)}
@@ -188,7 +214,7 @@ const Table = ({ tableData }) => {
           No data to show here{" "}
         </div>
       )}
-      {dataList.length > 100 && (
+      {tableData.length > 100 && (
         <div className="flex justify-end gap-[30px]">
           <svg
             width="9"

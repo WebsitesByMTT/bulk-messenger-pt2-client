@@ -2,7 +2,7 @@
 import axios from "axios";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { getAllAgents, sendMessage } from "../lib/api";
+import {  sendMessage } from "../lib/api";
 const NewMessage = () => {
   const [message, setMessage] = useState({
     message: "",
@@ -12,8 +12,6 @@ const NewMessage = () => {
     interval: "",
     count: "",
   });
-
-  console.log(message, "messages");
 
   function handleAgentMessage(e) {
     e.preventDefault();

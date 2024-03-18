@@ -1,10 +1,10 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { getAgentData } from "@/services/apiAuth";
+import { getAgentData } from "../lib/api";
 import Table from "@/components/Table";
 
-import { getAgentData } from "../lib/api";
+
 
 const History = () => {
   useEffect(() => {
