@@ -1,20 +1,19 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { getAgentData } from "../lib/data";
+import { getAgentData } from "../lib/api";
 const History = () => {
   useEffect(() => {
     (async () => {
       try {
         const agentData = await getAgentData();
         setData(agentData);
-        console.log(agentData)
+        console.log(agentData);
       } catch (error) {
         console.error("Error fetching agent data:", error);
       }
     })();
   }, []);
-
 
   const [searched, setSearched] = useState("");
 

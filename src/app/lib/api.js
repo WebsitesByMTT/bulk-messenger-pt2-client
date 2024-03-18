@@ -62,11 +62,26 @@ async function getAllMessagesByUsername() {
   }
 }
 
-async function createAgent(formData) {
+async function createUsers(formData) {
   try {
+    let headers = {};
+    if (formData.role === "admin") {
+      headers = {
+        headers: {
+          Authorization: `Bearer ${formData.keys}`,
+        },
+      };
+    } else {
+      headers = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+    }
+
     await axios.post(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/send`,
-      message,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/users/register`,
+      formData,
       headers
     );
   } catch (error) {
@@ -93,4 +108,5 @@ export {
   deleteUsers,
   getAllAgents,
   getAllMessagesByUsername,
+  createUsers,
 };
