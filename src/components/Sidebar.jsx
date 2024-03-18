@@ -3,18 +3,48 @@ import Link from "next/link";
 import LoginImage from "../assets/LoginImage.png";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import Cookies from "js-cookie";
+
 const Sidebar = () => {
   const pathname = usePathname();
-  const sidebarList = [
-    {
-      name: "New Message",
-      link: "/newmessage",
-    },
-    {
-      name: "History",
-      link: "/history",
-    },
-  ];
+  const role = Cookies.get("role");
+  const sidebarList = [];
+
+  switch (role) {
+    case "admin":
+      sidebarList.push(
+        {
+          name: " Message",
+          link: "/message",
+        },
+        {
+          name: "Agents",
+          link: "/agents",
+        },
+        {
+          name: "Create",
+          link: "/create",
+        }
+      );
+      break;
+
+    case "agent":
+      sidebarList.push(
+        {
+          name: "New message",
+          link: "/newmessage",
+        },
+        {
+          name: "History",
+          link: "/history",
+        }
+      );
+      break;
+
+    default:
+      // Handle any other roles or no role specified
+      break;
+  }
   return (
     <div
       className={
@@ -47,7 +77,6 @@ const Sidebar = () => {
           </svg>
         </Link>
         <ul className="text-white text-xl flex flex-col gap-[5px] mt-12">
-
           {sidebarList.map((route, index) => (
             <Link
               key={index}
@@ -98,7 +127,6 @@ const Sidebar = () => {
       <div className="py-4 flex items-center justify-between border-t-[2px] border-[#8C8C8C] text-white mr-8">
         <div className="flex gap-[10px] w-[90%] items-center">
           <div className="w-[50px] h-[50px]">
-
             <Image
               className="w-full h-full rounded-[100%]"
               src={LoginImage}
