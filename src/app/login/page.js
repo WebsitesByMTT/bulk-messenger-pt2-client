@@ -32,7 +32,7 @@ const Page = () => {
       if (response?.data?.token) {
         Cookies.set("token", response?.data?.token);
         Cookies.set("role", response?.data?.role);
-        router.push(`dashboard/${role.value}`);
+        router.push("/");
       }
       setFormData({ username: "", password: "" });
       setError("");
