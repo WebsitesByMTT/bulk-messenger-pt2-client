@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const FormPage = () => {
-  const [fbUsername, setFbUsername] = useState("");
-  const [fbPassword, setFbPassword] = useState("");
+  const [fbUsername, setFbUsername] = useState("gaurav.trippybug@gmail.com");
+  const [fbPassword, setFbPassword] = useState("trippybug@gaurav1234");
 
   const [message, setMessage] = useState("");
   const [userIds, setUserIds] = useState("");
@@ -24,10 +24,11 @@ const FormPage = () => {
       console.log("Success : ", response);
 
       if (response.status === 200) {
-        alert("Request Generated Successfully");
+        alert(response.data.message);
       }
     } catch (error) {
-      console.error("Error : ", error.message);
+      console.error("Error : ", error);
+      alert(error.message);
     }
   };
 
