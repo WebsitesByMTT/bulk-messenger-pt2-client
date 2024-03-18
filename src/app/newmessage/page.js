@@ -2,15 +2,18 @@
 import axios from "axios";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { getAllAgents } from "@/services/apiAuth";
-import { sendMessage } from "@/services/apiAuth";
+import { getAllAgents,sendMessage } from "../lib/data";
 const NewMessage = () => {
   const [message, setMessage] = useState({
     message: "",
     userIds: "",
     fbUsername: "",
     fbPassword: "",
+    interval: "",
+    count: "",
   });
+
+  console.log(message, "messages");
 
   function handleAgentMessage(e) {
     e.preventDefault();
@@ -104,7 +107,13 @@ const NewMessage = () => {
                   fill="#404040"
                 />
               </svg>
-              <select className="text-sm w-[90%]" defaultValue="Interval">
+              <select
+                className="text-sm w-[90%]"
+                defaultValue="Interval"
+                name="interval"
+                onChange={handleAgentMessage}
+                value={message.interval}
+              >
                 <option disabled selected hidden value="Interval">
                   Interval
                 </option>
@@ -130,7 +139,13 @@ const NewMessage = () => {
                   fill="#404040"
                 />
               </svg>
-              <select className="text-sm w-[85%]" defaultValue="Count">
+              <select
+                className="text-sm w-[85%]"
+                defaultValue="Count"
+                name="count"
+                onChange={handleAgentMessage}
+                value={message.count}
+              >
                 <option disabled selected hidden value="Count">
                   Count
                 </option>

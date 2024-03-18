@@ -9,8 +9,6 @@ import Cookies from "js-cookie";
 const Page = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
-  const role = Cookies.get("role");
-
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;

@@ -1,4 +1,3 @@
-"use client";
 import axios from "axios";
 import Cookies from "js-cookie";
 const token = Cookies.get("token");
@@ -47,26 +46,37 @@ async function getAllAgents() {
 }
 
 async function getAllMessagesByUsername() {
-    try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/agents`, headers,{
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/agents`,
+      headers,
+      {
         params: {
-            username: username,
-          },
-         } );
-      return response?.data?.users;
-    } catch (error) {
-      console.error("Error", error.message);
-    }
+          username: username,
+        },
+      }
+    );
+    return response?.data?.users;
+  } catch (error) {
+    console.error("Error", error.message);
   }
+}
 
-
-
-
+async function createAgent(formData) {
+  try {
+    await axios.post(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/send`,
+      message,
+      headers
+    );
+  } catch (error) {
+    console.error("Error", error.message);
+  }
+}
 
 async function deleteUsers(username) {
   try {
-    await axios.delete(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`,headers,{
+    await axios.delete(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, headers, {
       params: {
         username: username,
       },
@@ -77,4 +87,10 @@ async function deleteUsers(username) {
   }
 }
 
-export { sendMessage, getAgentData, deleteUsers, getAllAgents,getAllMessagesByUsername };
+export {
+  sendMessage,
+  getAgentData,
+  deleteUsers,
+  getAllAgents,
+  getAllMessagesByUsername,
+};
