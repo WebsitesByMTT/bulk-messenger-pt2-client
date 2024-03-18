@@ -3,18 +3,22 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { getAgentData } from "@/services/apiAuth";
 import Table from "@/components/Table";
+
+import { getAgentData } from "../lib/api";
+
 const History = () => {
   useEffect(() => {
     (async () => {
       try {
         const agentData = await getAgentData();
-        console.log("history", agentData);
         setData(agentData);
+        console.log(agentData);
       } catch (error) {
         console.error("Error fetching agent data:", error);
       }
     })();
   }, []);
+
   const tableData = [
     {
       id: "1",
@@ -73,6 +77,20 @@ const History = () => {
       createdAt: "8:45 am",
     },
   ];
+
+
+
+  const [searched, setSearched] = useState("");
+
+  const currentDate = new Date().toISOString().split("T")[0];
+
+  const [dataList, setDataList] = useState("");
+
+  const handleDelete = (itemId) => {
+    setDataList((prevData) => prevData.filter((item) => item.id !== itemId));
+  };
+
+  const [data, setData] = useState([]);
 
   return (
     <div>

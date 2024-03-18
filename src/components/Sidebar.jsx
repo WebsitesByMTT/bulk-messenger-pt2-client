@@ -4,12 +4,13 @@ import LoginImage from "../assets/LoginImage.png";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 const Sidebar = () => {
   const pathname = usePathname();
   const role = Cookies.get("role");
   const sidebarList = [];
-
+  const route = useRouter();
   switch (role) {
     case "admin":
       sidebarList.push(
@@ -138,7 +139,15 @@ const Sidebar = () => {
             <p>Abc Name</p>
           </div>
         </div>
-        <Link href="/login" className="w-[10%]">
+        <Link
+          href="/login"
+          className="w-[10%]"
+          onClick={() => {
+            Cookies.remove("token");
+            Cookies.remove("role");
+            route.push("/login");
+          }}
+        >
           <svg
             width="100%"
             height="45%"
