@@ -23,8 +23,6 @@ export const page = () => {
           name="name"
           placeholder="Enter Name"
           required
-          // value={message.message}
-          // onChange={handleAgentMessage}
         ></input>
         <lable className="text-lg font-semibold mt-2" htmlFor="username">
           Username
@@ -34,8 +32,6 @@ export const page = () => {
           name="username"
           placeholder="e.g, Rahul"
           required
-          // value={message.userIds}
-          // onChange={handleAgentMessage}
         ></input>
         <lable className="text-lg font-semibold mt-2" htmlFor="password">
           Password
@@ -46,8 +42,6 @@ export const page = () => {
           placeholder="*********"
           type="Password"
           required
-          // value={message.fbPassword}
-          // onChange={handleAgentMessage}
         />
         {selectedRole === "admin" && (
           <input
@@ -55,8 +49,6 @@ export const page = () => {
             name="Password"
             placeholder="API key"
             required
-            // value={message.fbPassword}
-            // onChange={handleAgentMessage}
           />
         )}
         <select

@@ -1,26 +1,66 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { usePathname } from "next/navigation";
 const Table = ({ tableData }) => {
   const pathname = usePathname();
-  console.log(pathname);
   const role = Cookies.get("role");
   const [searched, setSearched] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("All");
+  const [filteredData, setFilteredData] = useState([]);
+
   const currentDate = new Date().toISOString().split("T")[0];
   let tableHeaders = [];
   let dataFields = [];
+  let fieldToSearch = "";
+
+  // Search according to field
+  useEffect(() => {
+    if (!searched.trim()) {
+      setFilteredData(tableData);
+    } else {
+      setFilteredData((prevData) =>
+        prevData.filter(
+          (item) =>
+            item[fieldToSearch] &&
+            item[fieldToSearch]
+              .toString()
+              .toLowerCase()
+              .includes(searched.toLowerCase())
+        )
+      );
+    }
+  }, [searched]);
+
+  // Filter according to status
+  const handleStatusChange = (e) => {
+    const selectedStatus = e.target.value;
+    setSelectedStatus(selectedStatus);
+    setFilteredData(
+      tableData.filter((data) => {
+        if (selectedStatus === "All") return true;
+        return data.status === selectedStatus;
+      })
+    );
+  };
+  // Filter according to Created Time
+  const handleTimeChange = (e) => {
+    console.log(e.target.value);
+  };
+  // change tableHeaders and tableData according to role and path
   switch (role) {
     case "admin":
       switch (pathname) {
         case "/message":
           tableHeaders = ["Agent", "Sent From", "Sent to", "Message"];
           dataFields = ["agent", "sentFrom", "sentTo", "message"];
+          fieldToSearch = "agent";
           break;
         case "/agents":
-          tableHeaders = ["Name", "User Name", "Password"];
+          tableHeaders = ["Name", "Username", "Password"];
           dataFields = ["name", "username", "password"];
+          fieldToSearch = "name";
           break;
       }
       break;
@@ -28,17 +68,18 @@ const Table = ({ tableData }) => {
     case "agent":
       tableHeaders = ["Message", "User ID", "Facebook Id"];
       dataFields = ["message", "userId", "facebookId"];
+      fieldToSearch = "userId";
       break;
 
     default:
-      // Handle any other roles or no role specified
       break;
   }
 
-  const [dataList, setDataList] = useState(tableData);
-
+  // delete data from list
   const handleDelete = (itemId) => {
-    setDataList((prevData) => prevData.filter((item) => item.id !== itemId));
+    setFilteredData((prevData) =>
+      prevData.filter((item) => item.id !== itemId)
+    );
   };
 
   return (
@@ -67,6 +108,7 @@ const Table = ({ tableData }) => {
           <input
             className="bg-transparent"
             placeholder="search"
+            value={searched}
             onChange={(e) => setSearched(e.target.value)}
           />
         </div>
@@ -80,7 +122,7 @@ const Table = ({ tableData }) => {
           />
         </div>
       </div>
-      {dataList.length > 0 ? (
+      {filteredData.length > 0 ? (
         <table className="w-full">
           <thead>
             <tr>
@@ -89,7 +131,11 @@ const Table = ({ tableData }) => {
               ))}
               {pathname === "/agents" ? null : (
                 <th>
-                  <select className="p-2" defaultValue="Status">
+                  <select
+                    className="p-2"
+                    defaultValue="Status"
+                    onChange={handleStatusChange}
+                  >
                     <option hidden value="Status">
                       Status
                     </option>
@@ -100,7 +146,11 @@ const Table = ({ tableData }) => {
                 </th>
               )}
               <th>
-                <select className="p-2" defaultValue="Created At">
+                <select
+                  className="p-2"
+                  defaultValue="Created At"
+                  onChange={handleTimeChange}
+                >
                   <option hidden value="Created At">
                     Created At
                   </option>
@@ -112,7 +162,7 @@ const Table = ({ tableData }) => {
             </tr>
           </thead>
           <tbody>
-            {dataList.map((data) => (
+            {filteredData.map((data) => (
               <tr key={data.id}>
                 {dataFields.map((field, index) => (
                   <td key={index}>{data[field]}</td>
@@ -184,11 +234,10 @@ const Table = ({ tableData }) => {
         </table>
       ) : (
         <div className="m-auto mt-10 font-semibold text-xl">
-          {" "}
-          No data to show here{" "}
+          No data to show here
         </div>
       )}
-      {dataList.length > 100 && (
+      {filteredData.length > 10 && (
         <div className="flex justify-end gap-[30px]">
           <svg
             width="9"

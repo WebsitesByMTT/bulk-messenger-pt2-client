@@ -1,23 +1,19 @@
 "use client";
-import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
-import { getAgentData } from "@/services/apiAuth";
+import { useEffect } from "react";
 import Table from "@/components/Table";
-
 import { getAgentData } from "../lib/api";
 
 const History = () => {
-  useEffect(() => {
-    (async () => {
-      try {
-        const agentData = await getAgentData();
-        setData(agentData);
-        console.log(agentData);
-      } catch (error) {
-        console.error("Error fetching agent data:", error);
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const agentData = await getAgentData();
+  //       setData(agentData);
+  //     } catch (error) {
+  //       console.error("Error fetching agent data:", error);
+  //     }
+  //   })();
+  // }, []);
 
   const tableData = [
     {
@@ -31,7 +27,7 @@ const History = () => {
     {
       id: "2",
       message: "hi hello hey",
-      userId: "Rahul",
+      userId: "asdfghj",
       facebookId: "asdfghjkl",
       status: "Rejected",
       createdAt: "8:45 am",
@@ -39,7 +35,7 @@ const History = () => {
     {
       id: "3",
       message: "hi hello hey",
-      userId: "Rahul",
+      userId: "asdfgh",
       facebookId: "asdfghjkl",
       status: "Rejected",
       createdAt: "8:45 am",
@@ -76,21 +72,31 @@ const History = () => {
       status: "Rejected",
       createdAt: "8:45 am",
     },
+    {
+      id: "8",
+      message: "hi hello hey",
+      userId: "Rahul",
+      facebookId: "asdfghjkl",
+      status: "Rejected",
+      createdAt: "8:45 am",
+    },
+    {
+      id: "9",
+      message: "hi hello hey",
+      userId: "Rahul",
+      facebookId: "asdfghjkl",
+      status: "Rejected",
+      createdAt: "8:45 am",
+    },
+    {
+      id: "10",
+      message: "hi hello hey",
+      userId: "Rahul",
+      facebookId: "asdfghjkl",
+      status: "Rejected",
+      createdAt: "8:45 am",
+    },
   ];
-
-
-
-  const [searched, setSearched] = useState("");
-
-  const currentDate = new Date().toISOString().split("T")[0];
-
-  const [dataList, setDataList] = useState("");
-
-  const handleDelete = (itemId) => {
-    setDataList((prevData) => prevData.filter((item) => item.id !== itemId));
-  };
-
-  const [data, setData] = useState([]);
 
   return (
     <div>

@@ -1,8 +1,7 @@
 "use client";
-import axios from "axios";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { getAllAgents, sendMessage } from "../lib/api";
+import { useState } from "react";
+import { sendMessage } from "../lib/api";
 const NewMessage = () => {
   const [message, setMessage] = useState({
     message: "",
@@ -12,8 +11,6 @@ const NewMessage = () => {
     interval: "",
     count: "",
   });
-
-  console.log(message, "messages");
 
   function handleAgentMessage(e) {
     e.preventDefault();
@@ -76,7 +73,7 @@ const NewMessage = () => {
           onChange={handleAgentMessage}
         />
         <lable className="text-lg font-semibold mt-2" htmlFor="fbPassword">
-          fbPassword
+          fb Password
         </lable>
         <input
           className="border-2 border-[#8C8C8C] rounded-md p-2"
@@ -92,7 +89,7 @@ const NewMessage = () => {
             SUBMIT
           </button>
           <div className="flex gap-[10px] w-fit">
-            <div className="flex gap-[2px] p-1 border-[#8C8C8C] border-[1.5px] rounded-2xl justify-center w-[50%]">
+            <div className="flex gap-[2px] p-1 border-[#8C8C8C] border-[1.5px] rounded-2xl justify-center w-[70%]">
               <svg
                 width="15%"
                 height="24"
@@ -114,9 +111,6 @@ const NewMessage = () => {
                 onChange={handleAgentMessage}
                 value={message.interval}
               >
-                <option disabled selected hidden value="Interval">
-                  Interval
-                </option>
                 <option value="5">5 minutes</option>
                 <option value="10">10 minutes</option>
                 <option value="15">15 minutes</option>
@@ -146,9 +140,6 @@ const NewMessage = () => {
                 onChange={handleAgentMessage}
                 value={message.count}
               >
-                <option disabled selected hidden value="Count">
-                  Count
-                </option>
                 <option value="2">2</option>
                 <option value="4">4</option>
                 <option value="6">6</option>

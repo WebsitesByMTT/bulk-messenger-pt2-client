@@ -1,5 +1,4 @@
 import Table from "@/components/Table";
-import React from "react";
 
 const page = () => {
   const tableData = [
@@ -11,21 +10,21 @@ const page = () => {
       createdAt: "8:45 am",
     },
     {
-      id: "1",
+      id: "2",
       name: "Rahul",
       username: "Rahul223",
       password: "1234567",
       createdAt: "8:45 am",
     },
     {
-      id: "1",
+      id: "3",
       name: "Rahul",
       username: "Rahul223",
       password: "1234567",
       createdAt: "8:45 am",
     },
     {
-      id: "1",
+      id: "4",
       name: "Rahul",
       username: "Rahul223",
       password: "1234567",
