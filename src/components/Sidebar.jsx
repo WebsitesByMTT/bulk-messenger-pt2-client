@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 const Sidebar = () => {
   const pathname = usePathname();
   const role = Cookies.get("role");
+  const username = Cookies.get("username");
   const route = useRouter();
 
   const [menus, setMenus] = useState([
@@ -138,7 +139,7 @@ const Sidebar = () => {
             />
           </div>
           <div>
-            <h3 className="text-lg font-semibold">Abc Name</h3>
+            <h3 className="text-lg font-semibold">{username}</h3>
             <p>Abc Name</p>
           </div>
         </div>

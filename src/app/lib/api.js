@@ -99,11 +99,11 @@ async function createUsers(formData) {
 
 async function deleteUsers(username) {
   try {
-    await axios.delete(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, headers, {
-      params: {
-        username: username,
-      },
-    });
+    await axios.delete(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/agents/${username}`,
+      headers,
+      {}
+    );
     console.log("User deleted successfully");
   } catch (error) {
     console.error(error);

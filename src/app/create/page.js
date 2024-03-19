@@ -8,13 +8,9 @@ export const page = () => {
     username: "",
     name: "",
     password: "",
-    role: selectedRole,
+    role: "agent",
     keys: "",
   });
-
-  const handleChange = (e) => {
-    setSelectedRole(e.target.value);
-  };
 
   function handleAgentMessage(e) {
     e.preventDefault();
@@ -28,7 +24,7 @@ export const page = () => {
   async function handleSend(e) {
     console.log(message);
     e.preventDefault();
-    createUsers(message);
+    // createUsers(message);
     setMessage({ username: "", name: "", password: "", role: "", keys: "" });
   }
   return (
@@ -73,7 +69,7 @@ export const page = () => {
           value={message.password}
           onChange={handleAgentMessage}
         />
-        {selectedRole === "admin" && (
+        {message.role === "admin" && (
           <input
             className="border-2 border-[#8C8C8C] rounded-md p-2 mt-4"
             name="keys"
@@ -85,13 +81,11 @@ export const page = () => {
         )}
         <select
           className="text-sm mt-6 w-fit border-[#8C8C8C] border-[1px] p-1 rounded-2xl"
-          onChange={handleChange}
+          onChange={handleAgentMessage}
           name="role"
           value={message.role}
+          required
         >
-          <option hidden value="role">
-            Role
-          </option>
           <option value="admin">Admin</option>
           <option value="agent">Agent</option>
         </select>
