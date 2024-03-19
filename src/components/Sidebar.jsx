@@ -5,47 +5,48 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const Sidebar = () => {
   const pathname = usePathname();
   const role = Cookies.get("role");
-  const sidebarList = [];
   const route = useRouter();
-  switch (role) {
-    case "admin":
-      sidebarList.push(
+
+  const [menus, setMenus] = useState([
+    {
+      id: 1,
+      name: "New message",
+      link: "/newmessage",
+    },
+    {
+      id: 2,
+      name: "History",
+      link: "/message",
+    },
+  ]);
+
+  useEffect(() => {
+    if (role === "admin") {
+      setMenus([
         {
+          id: 1,
           name: " Message",
           link: "/message",
         },
         {
+          id: 2,
           name: "Agents",
           link: "/agents",
         },
         {
+          id: 3,
           name: "Create",
           link: "/create",
-        }
-      );
-      break;
-
-    case "agent":
-      sidebarList.push(
-        {
-          name: "New message",
-          link: "/newmessage",
         },
-        {
-          name: "History",
-          link: "/message",
-        }
-      );
-      break;
+      ]);
+    }
+  }, [role]);
 
-    default:
-      // Handle any other roles or no role specified
-      break;
-  }
   return (
     <div
       className={
@@ -78,49 +79,51 @@ const Sidebar = () => {
           </svg>
         </Link>
         <ul className="text-white text-xl flex flex-col gap-[5px] mt-12">
-          {sidebarList.map((route, index) => (
+          {menus.map((route, index) => (
             <Link
               key={index}
               href={route.link}
-              className={`px-2 py-3 ${
+              className={` px-2 py-3 ${
                 pathname === route.link ? "bg-white text-black pr-8 pl-4" : ""
               } rounded-tl-xl rounded-bl-xl transition-all duration-300 ease relative`}
             >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 15 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className={`absolute top-[-15px] right-0 transition-all duration-200 ${
-                  pathname === route.link ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M15 15V0C15 8.2843 8.28427 15 0 15H15Z"
-                  fill="white"
-                />
-              </svg>
-              <li>{route.name}</li>
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 15 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className={`absolute bottom-[-15px] right-0 transition-all duration-200 ${
-                  pathname === route.link ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M15 0V15C15 6.71573 8.28427 0 0 0H15Z"
-                  fill="white"
-                />
-              </svg>
+              <li>
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 15 15"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`absolute top-[-15px] right-0 transition-all duration-200 ${
+                    pathname === route.link ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M15 15V0C15 8.2843 8.28427 15 0 15H15Z"
+                    fill="white"
+                  />
+                </svg>
+                <span>{route.name}</span>
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 15 15"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`absolute bottom-[-15px] right-0 transition-all duration-200 ${
+                    pathname === route.link ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M15 0V15C15 6.71573 8.28427 0 0 0H15Z"
+                    fill="white"
+                  />
+                </svg>
+              </li>
             </Link>
           ))}
         </ul>

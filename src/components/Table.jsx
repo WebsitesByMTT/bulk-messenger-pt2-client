@@ -13,14 +13,12 @@ const Table = () => {
   const pathname = usePathname();
   const role = Cookies.get("role");
   const [searched, setSearched] = useState("");
-
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [filteredData, setFilteredData] = useState([]);
-
+  const [tableData, SetTableData] = useState([]);
+  const [tableHeaders, setTableHeaders] = useState([]);
+  const [dataFields, setDataFields] = useState([]);
   const currentDate = new Date().toISOString().split("T")[0];
-  let tableHeaders = [];
-  let dataFields = [];
-  let fieldToSearch = "";
 
   // Search according to field
   useEffect(() => {
@@ -51,15 +49,11 @@ const Table = () => {
       })
     );
   };
+
   // Filter according to Created Time
   const handleTimeChange = (e) => {
     console.log(e.target.value);
   };
-
-  const [tableData, SetTableData] = useState([]);
-  const [tableHeaders, setTableHeaders] = useState([]);
-  const [dataFields, setDataFields] = useState([]);
-  const currentDate = new Date().toISOString().split("T")[0];
 
   //getAllAgents
   function fetch(para) {
@@ -67,19 +61,19 @@ const Table = () => {
       try {
         const agentData = await para();
         SetTableData(agentData);
-        console.log(agentData)
+        console.log(agentData);
       } catch (error) {
         console.error("Error fetching agent data:", error);
       }
     })();
   }
 
-
   // delete data from list
   const handleDelete = (itemId) => {
     setFilteredData((prevData) =>
       prevData.filter((item) => item.id !== itemId)
     );
+  };
 
   useEffect(() => {
     switch (role) {
@@ -112,7 +106,6 @@ const Table = () => {
         break;
     }
   }, [role, pathname]);
-
 
   return (
     <motion.div
@@ -162,7 +155,11 @@ const Table = () => {
               ))}
               {pathname === "/agents" ? null : (
                 <th>
-                  <select className="p-2" defaultValue="Status">
+                  <select
+                    className="p-2"
+                    onChange={handleStatusChange}
+                    value={selectedStatus}
+                  >
                     <option hidden value="Status">
                       Status
                     </option>
@@ -173,7 +170,11 @@ const Table = () => {
                 </th>
               )}
               <th>
-                <select className="p-2" defaultValue="Created At">
+                <select
+                  className="p-2"
+                  defaultValue=""
+                  onChange={handleTimeChange}
+                >
                   <option hidden value="Created At">
                     Created At
                   </option>
@@ -229,7 +230,7 @@ const Table = () => {
                   </td>
                 )}
                 <td className="created_at">
-                  <div className="time">{data.created_at}</div>
+                  <div className="time">{data.created_at.split("T")[0]}</div>
                   <button
                     className="delete w-full h-full hidden justify-center items-center"
                     onClick={() => handleDelete(data.id)}
@@ -261,7 +262,7 @@ const Table = () => {
           No data to show here{" "}
         </div>
       )}
-      {tableData.length > 100 && (
+      {tableData.length > 10 && (
         <div className="flex justify-end gap-[30px]">
           <svg
             width="9"

@@ -39,9 +39,9 @@ export const page = () => {
       transition={{ duration: 0.3 }}
     >
       <form className="flex flex-col gap-[5px]" onSubmit={handleSend}>
-        <lable className="text-lg font-semibold mt-2" htmlFor="name">
+        <label className="text-lg font-semibold mt-2" htmlFor="name">
           Name
-        </lable>
+        </label>
         <input
           className="border-2 border-[#8C8C8C] rounded-md p-2 resize-none"
           name="name"
@@ -50,9 +50,9 @@ export const page = () => {
           value={message.name}
           onChange={handleAgentMessage}
         ></input>
-        <lable className="text-lg font-semibold mt-2" htmlFor="username">
+        <label className="text-lg font-semibold mt-2" htmlFor="username">
           Username
-        </lable>
+        </label>
         <input
           className="border-2 border-[#8C8C8C] rounded-md p-2 resize-none"
           name="username"
@@ -61,9 +61,9 @@ export const page = () => {
           value={message.username}
           onChange={handleAgentMessage}
         ></input>
-        <lable className="text-lg font-semibold mt-2" htmlFor="password">
+        <label className="text-lg font-semibold mt-2" htmlFor="password">
           Password
-        </lable>
+        </label>
         <input
           className="border-2 border-[#8C8C8C] rounded-md p-2"
           name="password"
