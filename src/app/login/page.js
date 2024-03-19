@@ -17,7 +17,7 @@ const Page = () => {
       [name]: value,
     }));
   };
-  
+
   const router = useRouter();
   //login api
   const handleLogin = async (e) => {
@@ -30,8 +30,8 @@ const Page = () => {
       if (response?.data?.token) {
         Cookies.set("token", response?.data?.token);
         Cookies.set("role", response?.data?.role);
-        Cookies.set("username",response?.data?.username)
-        router.push("/");
+        Cookies.set("username", response?.data?.username);
+        router.push("/message");
       }
       setFormData({ username: "", password: "" });
       setError("");

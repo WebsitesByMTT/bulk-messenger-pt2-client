@@ -10,17 +10,30 @@ export default function middleware(req) {
   }
 
   if (loggedin && pathname === "/login") {
-    return NextResponse.redirect(new URL(`/`, req.url));
-  }
-
-  if (role.value === "admin" && pathname === "/") {
     return NextResponse.redirect(new URL(`/message`, req.url));
   }
 
-  if (role.value === "agent" && pathname === "/") {
-    return NextResponse.redirect(new URL(`/message`, req.url));
+  if (loggedin && role && role.value === "admin") {
+    if (
+      pathname === "/agents" ||
+      pathname === "/message" ||
+      pathname === "/create"
+    ) {
+      return NextResponse.next();
+    }
+
+    return NextResponse.redirect(new URL("/message", req.url));
   }
 
+  if (loggedin && role && role.value === "agent") {
+    if (pathname === "/message" || pathname === "/newmessage") {
+      return NextResponse.next();
+    }
+
+    return NextResponse.redirect(new URL("/message", req.url));
+  }
+
+  // For any other cases
   return NextResponse.next();
 }
 

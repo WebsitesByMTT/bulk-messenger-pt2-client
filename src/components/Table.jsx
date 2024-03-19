@@ -10,50 +10,23 @@ import {
 } from "@/app/lib/api";
 
 const Table = () => {
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      day:"numeric",
+      month:"numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+  };
   const pathname = usePathname();
   const role = Cookies.get("role");
   const [searched, setSearched] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("All");
-  const [filteredData, setFilteredData] = useState([]);
   const [tableData, SetTableData] = useState([]);
   const [tableHeaders, setTableHeaders] = useState([]);
   const [dataFields, setDataFields] = useState([]);
   const currentDate = new Date().toISOString().split("T")[0];
-
-  // Search according to field
-  useEffect(() => {
-    if (!searched.trim()) {
-      setFilteredData(tableData);
-    } else {
-      setFilteredData((prevData) =>
-        prevData.filter(
-          (item) =>
-            item[fieldToSearch] &&
-            item[fieldToSearch]
-              .toString()
-              .toLowerCase()
-              .includes(searched.toLowerCase())
-        )
-      );
-    }
-  }, [searched]);
-
-  // Filter according to status
-  const handleStatusChange = (e) => {
-    const selectedStatus = e.target.value;
-    setSelectedStatus(selectedStatus);
-    setFilteredData(
-      tableData.filter((data) => {
-        if (selectedStatus === "All") return true;
-        return data.status === selectedStatus;
-      })
-    );
-  };
-
-  // Filter according to Created Time
-  const handleTimeChange = (e) => {
-    console.log(e.target.value);
-  };
 
   //getAllAgents
   function fetch(para) {
@@ -68,20 +41,13 @@ const Table = () => {
     })();
   }
 
-  // delete data from list
-  const handleDelete = (itemId) => {
-    setFilteredData((prevData) =>
-      prevData.filter((item) => item.id !== itemId)
-    );
-  };
-
   useEffect(() => {
     switch (role) {
       case "admin":
         switch (pathname) {
           case "/message":
             setTableHeaders(["Agent", "Sent From", "Sent to", "Message"]);
-            setDataFields(["agent", "sentFrom", "sentTo", "message"]);
+            setDataFields(["agent", "sent_from", "sent_to", "message"]);
             fetch(getAllMessages);
             break;
           case "/agents":
@@ -96,7 +62,7 @@ const Table = () => {
         switch (pathname) {
           case "/message":
             setTableHeaders(["Message", "User ID", "Facebook Id"]);
-            setDataFields(["message", "userId", "facebookId"]);
+            setDataFields(["message", "agent", "sent_to"]);
             fetch(getAllMessagesByUsername);
             break;
         }
@@ -106,6 +72,10 @@ const Table = () => {
         break;
     }
   }, [role, pathname]);
+
+  const handleDelete = (itemId) => {
+    settableData((prevData) => prevData.filter((item) => item.id !== itemId));
+  };
 
   return (
     <motion.div
@@ -155,26 +125,18 @@ const Table = () => {
               ))}
               {pathname === "/agents" ? null : (
                 <th>
-                  <select
-                    className="p-2"
-                    onChange={handleStatusChange}
-                    value={selectedStatus}
-                  >
+                  <select className="p-2" defaultValue="Status">
                     <option hidden value="Status">
                       Status
                     </option>
                     <option value="All">All</option>
-                    <option value="Accepted">Accepted</option>
+                    <option value="success">success</option>
                     <option value="Rejected">Rejected</option>
                   </select>
                 </th>
               )}
               <th>
-                <select
-                  className="p-2"
-                  defaultValue=""
-                  onChange={handleTimeChange}
-                >
+                <select className="p-2" defaultValue="Created At">
                   <option hidden value="Created At">
                     Created At
                   </option>
@@ -195,7 +157,7 @@ const Table = () => {
                   <td>
                     <div
                       className={`flex items-center justify-center gap-[5px] ${
-                        data.status === "Accepted"
+                        data.status === "success"
                           ? "bg-[#85c44191]"
                           : "bg-[#ec202371]"
                       } rounded-md w-fit px-2 py-1  m-auto`}
@@ -212,14 +174,14 @@ const Table = () => {
                           cy="4"
                           r="3.5"
                           fill={
-                            data.status === "Accepted" ? "#276956" : "#7F2600"
+                            data.status === "success" ? "#276956" : "#7F2600"
                           }
                         />
                       </svg>
                       <span
                         className={`
                       ${
-                        data.status === "Accepted"
+                        data.status === "success"
                           ? "text-[#276956]"
                           : "text-[#7F2600]"
                       } w-[90%]`}
@@ -230,7 +192,7 @@ const Table = () => {
                   </td>
                 )}
                 <td className="created_at">
-                  <div className="time">{data.created_at.split("T")[0]}</div>
+                  <div className="time">{formatDate(data.created_at)}</div>
                   <button
                     className="delete w-full h-full hidden justify-center items-center"
                     onClick={() => handleDelete(data.id)}
@@ -262,7 +224,7 @@ const Table = () => {
           No data to show here{" "}
         </div>
       )}
-      {tableData.length > 10 && (
+      {tableData.length > 100 && (
         <div className="flex justify-end gap-[30px]">
           <svg
             width="9"
@@ -299,5 +261,4 @@ const Table = () => {
     </motion.div>
   );
 };
-
 export default Table;
