@@ -1,8 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
-
-import { useEffect, useState } from "react";
-import {  sendMessage } from "../lib/api";
+import { useState } from "react";
+import { sendMessage } from "../lib/api";
 
 const NewMessage = () => {
   const [message, setMessage] = useState({
@@ -10,8 +9,8 @@ const NewMessage = () => {
     userIds: "",
     fbUsername: "",
     fbPassword: "",
-    interval: "",
-    count: "",
+    interval: "5",
+    count: "2",
   });
 
   function handleAgentMessage(e) {
@@ -27,7 +26,7 @@ const NewMessage = () => {
     console.log(message);
     e.preventDefault();
     sendMessage(message);
-    setMessage({ message: "", userIds: "", fbUsername: "", fbPassword: "" });
+    setMessage({ message: "", userIds: "", fbUsername: "", fbPassword: "", interval: 2, count: 5 });
   }
 
   return (
@@ -108,7 +107,6 @@ const NewMessage = () => {
               </svg>
               <select
                 className="text-sm w-[90%]"
-                defaultValue="Interval"
                 name="interval"
                 onChange={handleAgentMessage}
                 value={message.interval}
@@ -137,7 +135,6 @@ const NewMessage = () => {
               </svg>
               <select
                 className="text-sm w-[85%]"
-                defaultValue="Count"
                 name="count"
                 onChange={handleAgentMessage}
                 value={message.count}
