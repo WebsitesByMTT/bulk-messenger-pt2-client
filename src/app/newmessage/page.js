@@ -38,9 +38,9 @@ const NewMessage = () => {
       transition={{ duration: 0.3 }}
     >
       <form className="flex flex-col gap-[5px]" onSubmit={handleSend}>
-        <lable className="text-lg font-semibold mt-2" htmlFor="message">
+        <label className="text-lg font-semibold mt-2" htmlFor="message">
           Message
-        </lable>
+        </label>
         <textarea
           className="border-2 border-[#8C8C8C] rounded-md p-2 resize-none"
           name="message"
@@ -50,9 +50,9 @@ const NewMessage = () => {
           value={message.message}
           onChange={handleAgentMessage}
         ></textarea>
-        <lable className="text-lg font-semibold mt-2" htmlFor="userId">
+        <label className="text-lg font-semibold mt-2" htmlFor="userId">
           User ID
-        </lable>
+        </label>
         <textarea
           className="border-2 border-[#8C8C8C] rounded-md p-2 resize-none"
           name="userIds"
@@ -62,9 +62,9 @@ const NewMessage = () => {
           value={message.userIds}
           onChange={handleAgentMessage}
         ></textarea>
-        <lable className="text-lg font-semibold mt-2" htmlFor="fbUsername">
+        <label className="text-lg font-semibold mt-2" htmlFor="fbUsername">
           Facebook ID
-        </lable>
+        </label>
         <input
           className="border-2 border-[#8C8C8C] rounded-md p-2"
           name="fbUsername"
@@ -74,9 +74,9 @@ const NewMessage = () => {
           value={message.fbUsername}
           onChange={handleAgentMessage}
         />
-        <lable className="text-lg font-semibold mt-2" htmlFor="fbPassword">
+        <label className="text-lg font-semibold mt-2" htmlFor="fbPassword">
           fb Password
-        </lable>
+        </label>
         <input
           className="border-2 border-[#8C8C8C] rounded-md p-2"
           name="fbPassword"
