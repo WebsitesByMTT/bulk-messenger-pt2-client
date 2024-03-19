@@ -3,10 +3,17 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { usePathname } from "next/navigation";
-const Table = ({ tableData }) => {
+import {
+  getAllAgents,
+  getAllMessages,
+  getAllMessagesByUsername,
+} from "@/app/lib/api";
+
+const Table = () => {
   const pathname = usePathname();
   const role = Cookies.get("role");
   const [searched, setSearched] = useState("");
+
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [filteredData, setFilteredData] = useState([]);
 
@@ -48,39 +55,64 @@ const Table = ({ tableData }) => {
   const handleTimeChange = (e) => {
     console.log(e.target.value);
   };
-  // change tableHeaders and tableData according to role and path
-  switch (role) {
-    case "admin":
-      switch (pathname) {
-        case "/message":
-          tableHeaders = ["Agent", "Sent From", "Sent to", "Message"];
-          dataFields = ["agent", "sentFrom", "sentTo", "message"];
-          fieldToSearch = "agent";
-          break;
-        case "/agents":
-          tableHeaders = ["Name", "Username", "Password"];
-          dataFields = ["name", "username", "password"];
-          fieldToSearch = "name";
-          break;
+
+  const [tableData, SetTableData] = useState([]);
+  const [tableHeaders, setTableHeaders] = useState([]);
+  const [dataFields, setDataFields] = useState([]);
+  const currentDate = new Date().toISOString().split("T")[0];
+
+  //getAllAgents
+  function fetch(para) {
+    (async () => {
+      try {
+        const agentData = await para();
+        SetTableData(agentData);
+        console.log(agentData)
+      } catch (error) {
+        console.error("Error fetching agent data:", error);
       }
-      break;
-
-    case "agent":
-      tableHeaders = ["Message", "User ID", "Facebook Id"];
-      dataFields = ["message", "userId", "facebookId"];
-      fieldToSearch = "userId";
-      break;
-
-    default:
-      break;
+    })();
   }
+
 
   // delete data from list
   const handleDelete = (itemId) => {
     setFilteredData((prevData) =>
       prevData.filter((item) => item.id !== itemId)
     );
-  };
+
+  useEffect(() => {
+    switch (role) {
+      case "admin":
+        switch (pathname) {
+          case "/message":
+            setTableHeaders(["Agent", "Sent From", "Sent to", "Message"]);
+            setDataFields(["agent", "sentFrom", "sentTo", "message"]);
+            fetch(getAllMessages);
+            break;
+          case "/agents":
+            setTableHeaders(["Name", "User Name", "Password"]);
+            setDataFields(["name", "username", "password"]);
+            fetch(getAllAgents);
+            break;
+        }
+        break;
+
+      case "agent":
+        switch (pathname) {
+          case "/message":
+            setTableHeaders(["Message", "User ID", "Facebook Id"]);
+            setDataFields(["message", "userId", "facebookId"]);
+            fetch(getAllMessagesByUsername);
+            break;
+        }
+        break;
+
+      default:
+        break;
+    }
+  }, [role, pathname]);
+
 
   return (
     <motion.div
@@ -108,7 +140,6 @@ const Table = ({ tableData }) => {
           <input
             className="bg-transparent"
             placeholder="search"
-            value={searched}
             onChange={(e) => setSearched(e.target.value)}
           />
         </div>
@@ -122,7 +153,7 @@ const Table = ({ tableData }) => {
           />
         </div>
       </div>
-      {filteredData.length > 0 ? (
+      {tableData.length > 0 ? (
         <table className="w-full">
           <thead>
             <tr>
@@ -131,11 +162,7 @@ const Table = ({ tableData }) => {
               ))}
               {pathname === "/agents" ? null : (
                 <th>
-                  <select
-                    className="p-2"
-                    defaultValue="Status"
-                    onChange={handleStatusChange}
-                  >
+                  <select className="p-2" defaultValue="Status">
                     <option hidden value="Status">
                       Status
                     </option>
@@ -146,11 +173,7 @@ const Table = ({ tableData }) => {
                 </th>
               )}
               <th>
-                <select
-                  className="p-2"
-                  defaultValue="Created At"
-                  onChange={handleTimeChange}
-                >
+                <select className="p-2" defaultValue="Created At">
                   <option hidden value="Created At">
                     Created At
                   </option>
@@ -162,7 +185,7 @@ const Table = ({ tableData }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((data) => (
+            {tableData.map((data) => (
               <tr key={data.id}>
                 {dataFields.map((field, index) => (
                   <td key={index}>{data[field]}</td>
@@ -206,7 +229,7 @@ const Table = ({ tableData }) => {
                   </td>
                 )}
                 <td className="created_at">
-                  <div className="time">{data.createdAt}</div>
+                  <div className="time">{data.created_at}</div>
                   <button
                     className="delete w-full h-full hidden justify-center items-center"
                     onClick={() => handleDelete(data.id)}
@@ -234,10 +257,11 @@ const Table = ({ tableData }) => {
         </table>
       ) : (
         <div className="m-auto mt-10 font-semibold text-xl">
-          No data to show here
+          {" "}
+          No data to show here{" "}
         </div>
       )}
-      {filteredData.length > 10 && (
+      {tableData.length > 100 && (
         <div className="flex justify-end gap-[30px]">
           <svg
             width="9"

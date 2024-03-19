@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 export default function middleware(req) {
   const loggedin = req.cookies.get("token");
+  const role = req.cookies.get("role");
   const { pathname } = req.nextUrl;
 
   if (!loggedin && pathname !== "/login") {
@@ -12,16 +13,15 @@ export default function middleware(req) {
     return NextResponse.redirect(new URL(`/`, req.url));
   }
 
-  // if (role.value === "admin" && pathname === "/dashboard/agent") {
-  //   return NextResponse.redirect(new URL(`/dashboard/${role.value}`, req.url));
-  // }
+  if (role.value === "admin" && pathname === "/") {
+    return NextResponse.redirect(new URL(`/message`, req.url));
+  }
 
-  // if (role.value === "agent" && pathname === "/dashboard/admin") {
-  //   return NextResponse.redirect(new URL(`/dashboard/${role.value}`, req.url));
-  // }
+  if (role.value === "agent" && pathname === "/") {
+    return NextResponse.redirect(new URL(`/message`, req.url));
+  }
 
   return NextResponse.next();
-
 }
 
 export const config = {

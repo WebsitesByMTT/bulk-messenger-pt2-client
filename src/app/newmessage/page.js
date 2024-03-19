@@ -1,7 +1,9 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { sendMessage } from "../lib/api";
+
+import { useEffect, useState } from "react";
+import {  sendMessage } from "../lib/api";
+
 const NewMessage = () => {
   const [message, setMessage] = useState({
     message: "",
