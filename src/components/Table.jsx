@@ -13,6 +13,49 @@ const Table = () => {
   const pathname = usePathname();
   const role = Cookies.get("role");
   const [searched, setSearched] = useState("");
+
+  const [selectedStatus, setSelectedStatus] = useState("All");
+  const [filteredData, setFilteredData] = useState([]);
+
+  const currentDate = new Date().toISOString().split("T")[0];
+  let tableHeaders = [];
+  let dataFields = [];
+  let fieldToSearch = "";
+
+  // Search according to field
+  useEffect(() => {
+    if (!searched.trim()) {
+      setFilteredData(tableData);
+    } else {
+      setFilteredData((prevData) =>
+        prevData.filter(
+          (item) =>
+            item[fieldToSearch] &&
+            item[fieldToSearch]
+              .toString()
+              .toLowerCase()
+              .includes(searched.toLowerCase())
+        )
+      );
+    }
+  }, [searched]);
+
+  // Filter according to status
+  const handleStatusChange = (e) => {
+    const selectedStatus = e.target.value;
+    setSelectedStatus(selectedStatus);
+    setFilteredData(
+      tableData.filter((data) => {
+        if (selectedStatus === "All") return true;
+        return data.status === selectedStatus;
+      })
+    );
+  };
+  // Filter according to Created Time
+  const handleTimeChange = (e) => {
+    console.log(e.target.value);
+  };
+
   const [tableData, SetTableData] = useState([]);
   const [tableHeaders, setTableHeaders] = useState([]);
   const [dataFields, setDataFields] = useState([]);
@@ -30,6 +73,13 @@ const Table = () => {
       }
     })();
   }
+
+
+  // delete data from list
+  const handleDelete = (itemId) => {
+    setFilteredData((prevData) =>
+      prevData.filter((item) => item.id !== itemId)
+    );
 
   useEffect(() => {
     switch (role) {
@@ -63,9 +113,6 @@ const Table = () => {
     }
   }, [role, pathname]);
 
-  const handleDelete = (itemId) => {
-    settableData((prevData) => prevData.filter((item) => item.id !== itemId));
-  };
 
   return (
     <motion.div
