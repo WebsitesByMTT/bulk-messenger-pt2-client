@@ -3,14 +3,15 @@ import Link from "next/link";
 import LoginImage from "../assets/LoginImage.png";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import userDetails from "@/app/lib/token";
+import Cookies from "js-cookie";
 
 const Sidebar = () => {
   const pathname = usePathname();
-  const role = Cookies.get("role");
-  const username = Cookies.get("username");
+  const role = userDetails?.role;
+  const username = userDetails?.username;
   const route = useRouter();
 
   const [menus, setMenus] = useState([
@@ -148,7 +149,6 @@ const Sidebar = () => {
           className="w-[10%]"
           onClick={() => {
             Cookies.remove("token");
-            Cookies.remove("role");
             route.push("/login");
           }}
         >
