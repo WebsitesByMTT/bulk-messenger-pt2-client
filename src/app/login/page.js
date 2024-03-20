@@ -7,9 +7,7 @@ import Image from "next/image";
 import Cookies from "js-cookie";
 
 const Page = () => {
-
-
-
+  
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const handleChange = (e) => {
