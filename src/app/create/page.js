@@ -2,9 +2,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { createUsers } from "../lib/api";
-import Modal from "@/components/Modal";
 export const Create = () => {
-  // const [selectedRole, setSelectedRole] = useState("");
   const [message, setMessage] = useState({
     username: "",
     name: "",
@@ -25,7 +23,7 @@ export const Create = () => {
   async function handleSend(e) {
     console.log(message);
     e.preventDefault();
-    // createUsers(message);
+    createUsers(message);
     setMessage({
       username: "",
       name: "",
@@ -103,7 +101,6 @@ export const Create = () => {
           </button>
         </div>
       </form>
-      <Modal/>
     </motion.div>
   );
 };

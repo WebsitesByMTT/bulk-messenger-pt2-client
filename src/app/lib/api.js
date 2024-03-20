@@ -109,6 +109,19 @@ async function deleteUsers(username) {
     console.error(error);
   }
 }
+async function updateAgent(username, agentdata) {
+  try {
+    const response = await axios.put(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/agents/${username}`,
+      agentdata,
+      headers
+    );
+    console.log("Agent updated successfully");
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 export {
   sendMessage,
@@ -118,4 +131,5 @@ export {
   getAllMessagesByUsername,
   createUsers,
   getAllMessages,
+  updateAgent,
 };
