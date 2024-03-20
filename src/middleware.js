@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-
+import Cookies from "js-cookie";
 export default function middleware(req) {
-  const loggedin = req.cookies.get("token");
+  const loggedin = Cookies.get("token");
+  console.log(loggedin);
   const role = req.cookies.get("role");
   const { pathname } = req.nextUrl;
 
@@ -10,7 +11,7 @@ export default function middleware(req) {
   }
 
   if (loggedin && pathname === "/login") {
-    return NextResponse.redirect(new URL(`/message`, req.url));
+    return NextResponse.redirect(new URL("/message", req.url));
   }
 
   if (loggedin && role && role.value === "admin") {
@@ -38,5 +39,5 @@ export default function middleware(req) {
 }
 
 export const config = {
-  matcher: "/((?!api|static|.*\\..*|_next).*)",
+  matcher: "/((?!api|static|.\..|_next).*)",
 };

@@ -2,8 +2,9 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { createUsers } from "../lib/api";
-export const page = () => {
-  const [selectedRole, setSelectedRole] = useState("");
+import Modal from "@/components/Modal";
+export const Create = () => {
+  // const [selectedRole, setSelectedRole] = useState("");
   const [message, setMessage] = useState({
     username: "",
     name: "",
@@ -25,7 +26,13 @@ export const page = () => {
     console.log(message);
     e.preventDefault();
     // createUsers(message);
-    setMessage({ username: "", name: "", password: "", role: "", keys: "" });
+    setMessage({
+      username: "",
+      name: "",
+      password: "",
+      role: "agent",
+      keys: "",
+    });
   }
   return (
     <motion.div
@@ -96,8 +103,9 @@ export const page = () => {
           </button>
         </div>
       </form>
+      <Modal/>
     </motion.div>
   );
 };
 
-export default page;
+export default Create;

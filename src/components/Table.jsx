@@ -9,8 +9,9 @@ import {
   getAllMessages,
   getAllMessagesByUsername,
 } from "@/app/lib/api";
-
+import userDetails from "@/app/lib/token";
 const Table = () => {
+console.log(userDetails, "token");
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString("en-US", {
@@ -96,7 +97,7 @@ const Table = () => {
         )
       );
     }
-  }, [searched]);
+  }, [searched, fieldToSearch]);
 
   // Filter according to status
   const handleStatusChange = (e) => {
