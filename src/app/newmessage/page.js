@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { sendMessage } from "../lib/api";
+import toast from "react-hot-toast";
 
 const NewMessage = () => {
   const [message, setMessage] = useState({
@@ -25,8 +26,21 @@ const NewMessage = () => {
   async function handleSend(e) {
     console.log(message);
     e.preventDefault();
-    sendMessage(message);
-    setMessage({ message: "", userIds: "", fbUsername: "", fbPassword: "", interval: 2, count: 5 });
+    const response = await sendMessage(message);
+    console.log(response.status);
+    if (response?.status === 200) {
+      if (response.data.message !== "Login Failed")
+        toast.success(response.data.message);
+      else toast.error(response.data.message);
+    } else toast.error(response);
+    setMessage({
+      message: "",
+      userIds: "",
+      fbUsername: "",
+      fbPassword: "",
+      interval: 2,
+      count: 5,
+    });
   }
 
   return (

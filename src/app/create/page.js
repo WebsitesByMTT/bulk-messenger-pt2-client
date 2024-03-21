@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { createUsers } from "../lib/api";
+import toast from "react-hot-toast";
 export const Create = () => {
   const [message, setMessage] = useState({
     username: "",
@@ -21,9 +22,11 @@ export const Create = () => {
   }
 
   async function handleSend(e) {
-    console.log(message);
     e.preventDefault();
-    createUsers(message);
+    const response = await createUsers(message);
+    if (response?.data?.success) {
+      toast.success(response.data.message);
+    } else toast.error(response);
     setMessage({
       username: "",
       name: "",

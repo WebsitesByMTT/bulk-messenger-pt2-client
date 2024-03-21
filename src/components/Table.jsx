@@ -1,10 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import { usePathname } from "next/navigation";
 import {
-  deleteUsers,
   getAllAgents,
   getAllMessages,
   getAllMessagesByUsername,
@@ -14,7 +12,7 @@ import Modal from "./Modal";
 
 const Table = () => {
   const pathname = usePathname();
-  const role = Cookies.get("role");
+  const role = userDetails?.role;
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState(tableData);
   const [tableHeaders, setTableHeaders] = useState([]);
@@ -132,24 +130,20 @@ const Table = () => {
   // Filter according to time
   const handleTimeChange = (e) => {
     const selectedTime = e.target.value;
-    // setFilteredData(
-    //   tableData.filter((item) => {
-    //     const itemDate = new Date(item.created_at).toISOString().split("T")[0];
-
-    //     return itemDate === selectedDate;
-    //   })
-    // );
-  };
-
-  //Delete Agent
-  const handleDelete = async (username) => {
-    try {
-      const updatedData = await deleteUsers(username);
-      setTableData(updatedData);
-      setFilteredData(updatedData);
-    } catch (error) {
-      console.error("Error fetching agent data:", error);
+    if (selectedTime === "all") {
+      return tableData;
     }
+    setFilteredData(() =>
+      tableData.filter((record) => {
+        const createdAt = new Date(record.created_at);
+        const createdAtHour = createdAt.getHours() % 12 || 12;
+        const selectedHour = parseInt(selectedTime);
+        return (
+          createdAtHour >= selectedHour && createdAtHour < selectedHour + 1
+        );
+      })
+    );
+    return filteredData;
   };
 
   // pass data to Modal
@@ -162,7 +156,9 @@ const Table = () => {
   return (
     <>
       <motion.div
-        className="mt-[100px] mx-auto w-fit min-w-[70%] flex flex-col gap-6 mb-6"
+        className={` ${
+          open ? "blur-[2px]" : " "
+        } mt-[100px] mx-auto w-fit min-w-[70%] flex flex-col gap-6 mb-6`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
@@ -315,35 +311,7 @@ const Table = () => {
                         </span>
                       </div>
                     </td>
-                    {role === "admin" && pathname === "/agents" ? (
-                      <td className="created_at">
-                        <div className="time">
-                          {formatDate(data.created_at)}
-                        </div>
-                        <button
-                          className="delete w-full h-full hidden justify-center items-center"
-                          onClick={() => handleDelete(data.username)}
-                        >
-                          <svg
-                            width="20%"
-                            height="26"
-                            viewBox="0 0 24 26"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M22.6667 3.9C23.403 3.9 24 4.48203 24 5.2C24 5.91797 23.403 6.5 22.6667 6.5H21.3333V21.45C21.3333 23.9629 19.244 26 16.6667 26H7.33333C4.756 26 2.66667 23.9629 2.66667 21.45V6.5H1.33333C0.596954 6.5 0 5.91797 0 5.2C0 4.48203 0.596954 3.9 1.33333 3.9H22.6667ZM18.6667 6.5H5.33333V20.8C5.33333 22.2359 6.52724 23.4 8 23.4H16C17.4728 23.4 18.6667 22.2359 18.6667 20.8V6.5ZM9.33333 9.1C10.0697 9.1 10.6667 9.68203 10.6667 10.4V18.2C10.6667 18.918 10.0697 19.5 9.33333 19.5C8.59695 19.5 8 18.918 8 18.2V10.4C8 9.68203 8.59695 9.1 9.33333 9.1ZM14.6667 9.1C15.403 9.1 16 9.68203 16 10.4V18.2C16 18.918 15.403 19.5 14.6667 19.5C13.9303 19.5 13.3333 18.918 13.3333 18.2V10.4C13.3333 9.68203 13.9303 9.1 14.6667 9.1ZM14.6667 0C15.403 0 16 0.58203 16 1.3C16 2.01797 15.403 2.6 14.6667 2.6H9.33333C8.59695 2.6 8 2.01797 8 1.3C8 0.58203 8.59695 0 9.33333 0H14.6667Z"
-                              fill="#EC2025"
-                            />
-                          </svg>
-                          <span>Delete</span>
-                        </button>
-                      </td>
-                    ) : (
-                      <td>{formatDate(data.created_at)}</td>
-                    )}
+                    <td>{formatDate(data.created_at)}</td>
                   </tr>
                 ))}
               </>
@@ -395,6 +363,8 @@ const Table = () => {
           rowData={selectedRowData}
           field={selectedRowFields}
           setRowData={setSelectedRowData}
+          setFilteredData={setFilteredData}
+          setTableData={setTableData}
         />
       )}
     </>

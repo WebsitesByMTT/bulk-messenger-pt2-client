@@ -11,24 +11,9 @@ import Cookies from "js-cookie";
 const Sidebar = () => {
   const pathname = usePathname();
   const role = userDetails?.role;
-  const [username, setUsername] = useState("");
+  const username = userDetails?.username;
   const route = useRouter();
-  const [menus, setMenus] = useState([
-    {
-      id: 1,
-      name: "New message",
-      link: "/newmessage",
-    },
-    {
-      id: 2,
-      name: "History",
-      link: "/message",
-    },
-  ]);
-
-  useEffect(() => {
-    setUsername(userDetails?.username || "");
-  }, [userDetails?.username]);
+  const [menus, setMenus] = useState([]);
 
   useEffect(() => {
     if (role === "admin") {
@@ -47,6 +32,19 @@ const Sidebar = () => {
           id: 3,
           name: "Create",
           link: "/create",
+        },
+      ]);
+    } else if (role === "agent") {
+      setMenus([
+        {
+          id: 1,
+          name: "New message",
+          link: "/newmessage",
+        },
+        {
+          id: 2,
+          name: "History",
+          link: "/message",
         },
       ]);
     }
