@@ -11,8 +11,6 @@ export default function middleware(req) {
   if (loggedin && pathname === "/login") {
     return NextResponse.redirect(new URL(`/message`, req.url));
   }
-
-  //
   if (loggedin) {
     const decodeToken = jwt.decode(loggedin.value);
     const role = decodeToken ? decodeToken.role : null;
@@ -37,4 +35,5 @@ export default function middleware(req) {
   return NextResponse.next();
 }
 
-export const config = { matcher: "/((?!api|static|.\..|_next).*)" };
+export const config = { matcher: "/((?!api|static|.*\\..*|_next).*)" };
+
