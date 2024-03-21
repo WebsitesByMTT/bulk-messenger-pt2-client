@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 export default function middleware(req) {
   const loggedin = req.cookies.get("token");
   const { pathname } = req.nextUrl;
-
+//
   if (!loggedin && pathname !== "/login") {
     return NextResponse.redirect(new URL("/login", req.url));
   }
@@ -36,3 +36,4 @@ export default function middleware(req) {
 }
 
 export const config = { matcher: "/((?!api|static|.*\\..*|_next).*)" };
+

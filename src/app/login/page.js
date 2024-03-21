@@ -30,8 +30,6 @@ const Page = () => {
       );
       if (response?.data?.token) {
         Cookies.set("token", response?.data?.token);
-        Cookies.set("role", response?.data?.role);
-        Cookies.set("username", response?.data?.username);
         router.push("/message");
       }
       setFormData({ username: "", password: "" });

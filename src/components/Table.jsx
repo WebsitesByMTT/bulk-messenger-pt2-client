@@ -129,6 +129,18 @@ const Table = () => {
     );
   };
 
+  // Filter according to time
+  const handleTimeChange = (e) => {
+    const selectedTime = e.target.value;
+    // setFilteredData(
+    //   tableData.filter((item) => {
+    //     const itemDate = new Date(item.created_at).toISOString().split("T")[0];
+
+    //     return itemDate === selectedDate;
+    //   })
+    // );
+  };
+
   //Delete Agent
   const handleDelete = async (username) => {
     try {
@@ -228,13 +240,23 @@ const Table = () => {
                 </th>
               )}
               <th>
-                <select className="p-2" defaultValue="Created At">
+                <select className="p-2 text-center" onChange={handleTimeChange}>
                   <option hidden value="Created At">
                     Created At
                   </option>
                   <option value="1">1-2</option>
                   <option value="2">2-3</option>
                   <option value="3">3-4</option>
+                  <option value="4">4-5</option>
+                  <option value="5">5-6</option>
+                  <option value="6">6-7</option>
+                  <option value="7">7-8</option>
+                  <option value="8">8-9</option>
+                  <option value="9">9-10</option>
+                  <option value="10">10-11</option>
+                  <option value="11">11-12</option>
+                  <option value="11">12-1</option>
+                  <option value="all">All</option>
                 </select>
               </th>
             </tr>

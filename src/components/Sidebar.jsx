@@ -11,9 +11,8 @@ import Cookies from "js-cookie";
 const Sidebar = () => {
   const pathname = usePathname();
   const role = userDetails?.role;
-  const username = userDetails?.username;
+  const [username, setUsername] = useState("");
   const route = useRouter();
-
   const [menus, setMenus] = useState([
     {
       id: 1,
@@ -26,6 +25,10 @@ const Sidebar = () => {
       link: "/message",
     },
   ]);
+
+  useEffect(() => {
+    setUsername(userDetails?.username || "");
+  }, [userDetails?.username]);
 
   useEffect(() => {
     if (role === "admin") {
@@ -141,7 +144,6 @@ const Sidebar = () => {
           </div>
           <div>
             <h3 className="text-lg font-semibold">{username}</h3>
-            <p>Abc Name</p>
           </div>
         </div>
         <Link
