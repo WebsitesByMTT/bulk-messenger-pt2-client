@@ -24,13 +24,15 @@ async function getAgentData() {
 
 async function sendMessage(message) {
   try {
-    await axios.post(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/send`,
       message,
       headers
     );
+    return response;
   } catch (error) {
-    console.error("Error", error.message);
+    // console.error("Error", error.message);
+     return error.response.data.errors[0].message;
   }
 }
 
@@ -87,26 +89,30 @@ async function createUsers(formData) {
       };
     }
 
-    await axios.post(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/users/register`,
       formData,
       headers
     );
+    return response;
+
   } catch (error) {
-    console.error("Error", error.message);
+    return error.response.data.errors[0].message;
   }
 }
 
 async function deleteUsers(username) {
   try {
-    await axios.delete(
+    const response = await axios.delete(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/agents/${username}`,
       headers,
       {}
     );
-    console.log("User deleted successfully");
+    return response;
+    // console.log("User deleted successfully");
   } catch (error) {
-    console.error(error);
+    // console.error(error);
+    return error.response.data.errors[0].message;
   }
 }
 async function updateAgent(username, agentdata) {

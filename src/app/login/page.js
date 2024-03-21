@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import LoginImage from "../../assets/LoginImage.png";
 import Image from "next/image";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 const Page = () => {
-  
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const handleChange = (e) => {
@@ -28,15 +28,19 @@ const Page = () => {
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/users/login`,
         formData
       );
+      if (response.data.success) {
+        toast.success(response.data.message);
+      } else toast.error(response.data.message);
       if (response?.data?.token) {
         Cookies.set("token", response?.data?.token);
+        Cookies.set("username", response?.data?.username);
         router.push("/message");
       }
       setFormData({ username: "", password: "" });
       setError("");
     } catch (error) {
       console.error("Login failed:", error);
-      setError("Invalid username or password.");
+      toast.error("Invalid username or password.");
     }
   };
 
@@ -148,7 +152,5 @@ const Page = () => {
     </>
   );
 };
-
-
 
 export default Page;
