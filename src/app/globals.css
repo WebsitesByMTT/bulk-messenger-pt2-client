@@ -16,12 +16,69 @@
   }
 }
 
-
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 }
 
+h1 {
+  font-size: 2rem;
+}
 
+h4 {
+  font-size: 150%;
+  font-weight: 600;
+}
+textarea:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: none;
+-webkit-tap-highlight-color: transparent;
+
+}
+
+table th,
+td {
+  text-align: center;
+  padding: 1rem;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+table td {
+  font-weight: 500 !important;
+  font-size: 1rem;
+  color: #404040;
+  cursor: default;
+}
+
+table tr {
+  border-bottom: solid 1px #8c8c8c;
+}
+
+.hideScrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hideScrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.created_at:hover .time {
+  display: none;
+}
+
+.created_at:hover .delete {
+  display: flex;
+}
+
+
+input::-webkit-datetime-edit-day-field:focus,
+input::-webkit-datetime-edit-month-field:focus,
+input::-webkit-datetime-edit-year-field:focus {
+    background-color: transparent;
+    color: black;
+    outline: none;
+}

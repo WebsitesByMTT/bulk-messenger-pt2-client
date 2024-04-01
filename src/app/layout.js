@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import styles from "./layout.module.scss";
-import Link from "next/link";
+import Sidebar from "@/components/Sidebar";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,21 +13,19 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${styles.layout}`}>
-        <div className={styles.left}>
-          <ul className={styles.menu}>
-            <Link href={"/register"}>
-              <li>Create User</li>
-            </Link>
-            <Link href={"/login"}>
-              <li>Login</li>
-            </Link>
-            <Link href={"/register"}>
-              <li>Register</li>
-            </Link>
-          </ul>
+      <body
+        className={inter.className}
+        style={{
+          display: "flex",
+          overflow: "hidden",
+          height: "100vh",
+        }}
+      >
+        <Sidebar />
+        <div className="overflow-y-scroll h-screen flex-1 hideScrollbar min-w-[900px] relative">
+          {children}
         </div>
-        <div className={styles.right}>{children}</div>
+        <Toaster position="bottom-center" />
       </body>
     </html>
   );
