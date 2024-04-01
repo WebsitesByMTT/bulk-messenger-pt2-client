@@ -3,7 +3,7 @@ import { useState } from "react";
 import styles from "./sendMessage.module.scss";
 import axios from "axios";
 
-const page = () => {
+const Page = () => {
   const [fbUsername, setFbUsername] = useState("gaurav.trippybug@gmail.com");
   const [fbPassword, setFbPassword] = useState("trippybug@gaurav1234");
   const [message, setMessage] = useState("Hiiiiiii");
@@ -71,4 +71,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -3,7 +3,7 @@ import { useState } from "react";
 import styles from "./register.module.scss";
 import axios from "axios";
 
-const page = () => {
+const Page = () => {
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -63,4 +63,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
