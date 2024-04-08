@@ -6,11 +6,18 @@ import {
   getAllAgents,
   getAllMessages,
   getAllMessagesByUsername,
+  updateAgent,
 } from "@/app/lib/api";
 import userDetails from "@/app/lib/token";
 import Modal from "./Modal";
+import toast from "react-hot-toast";
 
-const Table = () => {
+const MODAL_CONTENT_TYPES = {
+  MESSAGES: "messages",
+  EDIT_AGENT: "editAgent",
+};
+
+const Table = ({ type, data }) => {
   const pathname = usePathname();
   const role = userDetails?.role;
   const [tableData, setTableData] = useState([]);
@@ -22,32 +29,43 @@ const Table = () => {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowFields, setSelectedRowFields] = useState([]);
-  const [open, setOpen] = useState(false);
   const currentDate = new Date().toISOString().split("T")[0];
+  const [createdAtSortOrder, setCreatedAtSortOrder] = useState("asc");
+  const [userStatus, setUserStatus] = useState("");
+  const [modalContent, setModalContent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
-  // format date
-  const formatDate = (dateString) => {
+  function formatDate(dateString) {
     const date = new Date(dateString);
-    return date.toLocaleString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
+    // Format the date and time separately
+    const formattedDate = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
-  };
+    const formattedTime = date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true, // Use 12-hour format
+    });
+
+    return { formattedDate, formattedTime };
+  }
 
   //getAllAgents
-  function fetch(para) {
-    (async () => {
-      try {
-        const agentData = await para();
-        setTableData(agentData);
-        setFilteredData(agentData);
-        console.log(agentData.created_at);
-      } catch (error) {
-        console.error("Error fetching agent data:", error);
-      }
-    })();
-  }
+  // function fetch(para) {
+  //   (async () => {
+  //     try {
+  //       const agentData = await para();
+  //       setTableData(agentData);
+  //       setFilteredData(agentData);
+  //       console.log(agentData.created_at);
+  //     } catch (error) {
+  //       console.error("Error fetching agent data:", error);
+  //     }
+  //   })();
+  // }
 
   // set table according to requirement
   useEffect(() => {
@@ -55,13 +73,15 @@ const Table = () => {
       case "admin":
         switch (pathname) {
           case "/message":
-            setTableHeaders(["Agent", "Sent From", "Sent to", "Message"]);
-            setDataFields(["agent", "sent_from", "sent_to", "message"]);
+            setTableHeaders(["Message", "Sent to", "Agent"]);
+            setDataFields(["message", "sent_to", "agent"]);
             fetch(getAllMessages);
             setFieldToSearch("agent");
             break;
           case "/agents":
-            setTableHeaders(["Name", "User Name", "Password"]);
+            if (type === "agentMessage") {
+            }
+            setTableHeaders(["Name", "Username", "Password"]);
             setDataFields(["name", "username", "password"]);
             fetch(getAllAgents);
             setFieldToSearch("name");
@@ -83,7 +103,7 @@ const Table = () => {
       default:
         break;
     }
-  }, [role, pathname, open]);
+  }, [role, pathname]);
 
   // Search according to field
   useEffect(() => {
@@ -146,38 +166,73 @@ const Table = () => {
     return filteredData;
   };
 
-  // pass data to Modal
-  const handleRowClick = (rowData, field) => {
-    setSelectedRowData(rowData);
-    setSelectedRowFields(field);
-    setOpen(true);
+  const sortDataHandler = () => {
+    const dataToSort = filteredData.length > 0 ? filteredData : tableData;
+
+    const sortedData = [...dataToSort].sort((a, b) => {
+      const dateA = new Date(a.created_at).getTime(); // Parse and convert to numeric timestamp
+      const dateB = new Date(b.created_at).getTime(); // Parse and convert to numeric timestamp
+      const sortOrder = createdAtSortOrder;
+
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+    });
+
+    setFilteredData(sortedData);
+    setCreatedAtSortOrder(createdAtSortOrder === "asc" ? "desc" : "asc");
+  };
+
+  const changeUserStatusHandler = async (username, status, newStatus) => {
+    try {
+      setUserStatus(newStatus);
+      const response = await updateAgent(username, { status: newStatus });
+      console.log(response.data);
+      if (response.data.success) toast.success(response.data.message);
+      else toast.error(response.data.message);
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong : Unable to update status");
+    }
+  };
+
+  const handleOpenEditModal = (userId) => {
+    setSelectedUserId(userId);
+    setModalContent(MODAL_CONTENT_TYPES.EDIT_AGENT);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenMessagesModal = (userId) => {
+    setSelectedUserId(userId);
+    setModalContent(MODAL_CONTENT_TYPES.MESSAGES);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
     <>
       <motion.div
-        className={` ${
-          open ? "blur-[2px]" : " "
-        } mt-[100px] mx-auto w-fit min-w-[70%] flex flex-col gap-6 mb-6`}
+        className={`mx-auto w-full  flex flex-col gap-6 mb-6 p-8`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
       >
         <div className="flex justify-between items-center">
-          <div className="flex gap-3 p-2 rounded-xl bg-[#E8E8E8]">
+          <div className="flex gap-3 px-4 py-2 rounded-3xl bg-[whitesmoke] w-1/2">
             <svg
-              width="26"
-              height="26"
-              viewBox="0 0 26 26"
-              fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M9.75749 3.25359C8.03226 3.25359 6.37769 3.9389 5.15777 5.15877C3.93784 6.37863 3.2525 8.03312 3.2525 9.75827C3.2525 11.4834 3.93784 13.1379 5.15777 14.3578C6.37769 15.5776 8.03226 16.263 9.75749 16.263C11.4827 16.263 13.1373 15.5776 14.3572 14.3578C15.5771 13.1379 16.2625 11.4834 16.2625 9.75827C16.2625 8.03312 15.5771 6.37863 14.3572 5.15877C13.1373 3.9389 11.4827 3.25359 9.75749 3.25359ZM1.84517e-07 9.75827C-0.000195784 8.22268 0.362072 6.70873 1.05734 5.33954C1.75261 3.97036 2.76124 2.7846 4.00122 1.8787C5.24119 0.972807 6.67748 0.372358 8.19328 0.12619C9.70908 -0.119979 11.2616 -0.00491509 12.7245 0.462022C14.1875 0.928959 15.5195 1.73458 16.6124 2.81338C17.7053 3.89217 18.5281 5.21367 19.0139 6.67039C19.4997 8.12711 19.6348 9.67793 19.4082 11.1967C19.1816 12.7155 18.5997 14.1593 17.7099 15.4108L25.5435 23.2441C25.8397 23.5508 26.0036 23.9616 25.9999 24.388C25.9962 24.8143 25.8252 25.2222 25.5237 25.5237C25.2222 25.8252 24.8143 25.9962 24.3879 25.9999C23.9615 26.0036 23.5507 25.8397 23.244 25.5435L15.412 17.7119C13.9522 18.7498 12.2348 19.3659 10.4481 19.4927C8.66141 19.6195 6.87427 19.252 5.28254 18.4306C3.69082 17.6092 2.35593 16.3654 1.42414 14.8357C0.492364 13.306 -0.0003481 11.5494 1.84517e-07 9.75827Z"
-                fill="#404040"
-              />
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
             </svg>
             <input
               className="bg-transparent"
@@ -200,29 +255,16 @@ const Table = () => {
         </div>
         <table className="w-full">
           <thead>
-            <tr>
+            <tr className=" border-b-[1px] border-[#8c8c8c]">
               {tableHeaders?.map((header, index) => (
                 <th key={index}>{header}</th>
               ))}
               {pathname === "/agents" ? (
-                <th>
-                  <select
-                    className="p-2"
-                    defaultValue="Status"
-                    onChange={handleStatusChange}
-                  >
-                    <option hidden value="Status">
-                      Status
-                    </option>
-                    <option value="All">All</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                </th>
+                <th>Status</th>
               ) : (
                 <th>
                   <select
-                    className="p-2"
+                    className="p-2 bg-transparent"
                     defaultValue="Status"
                     onChange={handleStatusChange}
                   >
@@ -235,94 +277,174 @@ const Table = () => {
                   </select>
                 </th>
               )}
-              <th>
-                <select className="p-2 text-center" onChange={handleTimeChange}>
-                  <option hidden value="Created At">
-                    Created At
-                  </option>
-                  <option value="1">1-2</option>
-                  <option value="2">2-3</option>
-                  <option value="3">3-4</option>
-                  <option value="4">4-5</option>
-                  <option value="5">5-6</option>
-                  <option value="6">6-7</option>
-                  <option value="7">7-8</option>
-                  <option value="8">8-9</option>
-                  <option value="9">9-10</option>
-                  <option value="10">10-11</option>
-                  <option value="11">11-12</option>
-                  <option value="11">12-1</option>
-                  <option value="all">All</option>
-                </select>
+
+              <th
+                className=" flex items-center justify-center gap-4"
+                onClick={sortDataHandler}
+              >
+                <span>Created At</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={`${createdAtSortOrder}`}
+                >
+                  <path d="m3 16 4 4 4-4" />
+                  <path d="M7 20V4" />
+                  <path d="m21 8-4-4-4 4" />
+                  <path d="M17 4v16" />
+                </svg>
               </th>
+
+              {pathname === "/agents" && type === undefined && (
+                <>
+                  <th>Messages</th>
+                  <th>Edit</th>
+                </>
+              )}
             </tr>
           </thead>
           <tbody>
             {filteredData?.length > 0 ? (
               <>
-                {filteredData?.map((data) => (
-                  <tr
-                    key={data.id}
-                    onClick={() => handleRowClick(data, dataFields)}
-                  >
-                    {dataFields.map((field, index) => (
-                      <td key={index}>
-                        {field === "password"
-                          ? data[field].substring(0, 9)
-                          : data[field]}
-                      </td>
-                    ))}
-                    <td>
-                      <div
-                        className={`flex items-center justify-center gap-[5px] ${
-                          data.status === "success" || data.status === "active"
-                            ? "bg-[#85c44191]"
-                            : "bg-[#ec202371]"
-                        } rounded-md w-fit px-2 py-1  m-auto`}
-                      >
-                        <svg
-                          width="10%"
-                          height="8"
-                          viewBox="0 0 7 8"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <circle
-                            cx="3.5"
-                            cy="4"
-                            r="3.5"
-                            fill={
-                              data.status === "success" ||
-                              data.status === "active"
-                                ? "#276956"
-                                : "#7F2600"
+                {filteredData?.map((data, index) => {
+                  const { formattedDate, formattedTime } = formatDate(
+                    data.created_at
+                  );
+                  return (
+                    <tr
+                      key={data.id}
+                      className=" hover:bg-[whitesmoke] transition-all"
+                    >
+                      {dataFields.map((field, index) => (
+                        <td key={index}>
+                          {field === "password"
+                            ? data[field].substring(0, 9)
+                            : field === "message"
+                            ? data[field].substring(0, 20)
+                            : data[field]}
+                        </td>
+                      ))}
+                      {pathname === "/message" && (
+                        <td>
+                          <div
+                            className={` ${
+                              data.status === "success"
+                                ? "bg-[#84c4414d] text-[#276956]"
+                                : "bg-[#ec20254d] text-[#7f2600]"
+                            } ${
+                              data.status === "pending"
+                                ? "bg-[#ebff004d] text-[#c57600]"
+                                : ""
+                            } w-[100%] capitalize p-2 rounded-2xl text-center `}
+                          >
+                            <span
+                              className={`${
+                                data.status === "success"
+                                  ? "text-[#276956]"
+                                  : "text-[#7F2600]"
+                              } w-[90%] capitalize`}
+                            >
+                              {data.status}
+                            </span>
+                          </div>
+                        </td>
+                      )}
+                      {pathname === "/agents" && (
+                        <td className="">
+                          <select
+                            defaultValue={data.status}
+                            onChange={(e) =>
+                              changeUserStatusHandler(
+                                data.username,
+                                data.status,
+                                e.target.value
+                              )
                             }
-                          />
-                        </svg>
-                        <span
-                          className={`
-                      ${
-                        data.status === "success" || data.status === "active"
-                          ? "text-[#276956]"
-                          : "text-[#7F2600]"
-                      } w-[90%] capitalize`}
-                        >
-                          {data.status}
-                        </span>
-                      </div>
-                    </td>
-                    <td>{formatDate(data.created_at)}</td>
-                  </tr>
-                ))}
+                            className={`${
+                              data.status === "active"
+                                ? "text-[#276956] bg-[#84c4414d]"
+                                : "text-[#7f2600] bg-[#ec20254d]"
+                            } w-[100%] capitalize p-2 rounded-2xl text-center appearance-none cursor-pointer`}
+                          >
+                            <option value="active">active</option>
+                            <option value="inactive">inactive</option>
+                          </select>
+                        </td>
+                      )}
+                      <td className="time">
+                        <p>{formattedTime}</p>
+                        <p>{formattedDate}</p>
+                      </td>
+                      {pathname === "/agents" && type == undefined && (
+                        <>
+                          <td
+                            className=""
+                            onClick={() =>
+                              handleOpenMessagesModal(data?.username)
+                            }
+                          >
+                            <div className=" flex items-center justify-center">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              >
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                <path d="M13 8H7" />
+                                <path d="M17 12H7" />
+                              </svg>
+                            </div>
+                          </td>
+                          <td
+                            className=""
+                            onClick={() => handleOpenEditModal(data?.username)}
+                          >
+                            <div className=" flex items-center justify-center">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                className="lucide lucide-ellipsis-vertical"
+                              >
+                                <circle cx="12" cy="12" r="1" />
+                                <circle cx="12" cy="5" r="1" />
+                                <circle cx="12" cy="19" r="1" />
+                              </svg>
+                            </div>
+                          </td>
+                        </>
+                      )}
+                    </tr>
+                  );
+                })}
               </>
             ) : (
-              <div className="m-auto w-full mt-10 font-semibold text-xl">
-                No data to show here
-              </div>
+              <tr className="w-full relative">
+                <div class="loader"></div>
+              </tr>
             )}
           </tbody>
         </table>
-        {filteredData?.length > 10 && (
+        {/* {filteredData?.length > 10 && (
           <div className="flex justify-end gap-[30px]">
             <svg
               width="9"
@@ -334,9 +456,9 @@ const Table = () => {
               <path
                 d="M8 15L1 8L8 1"
                 stroke="#404040"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
             <svg
@@ -349,24 +471,22 @@ const Table = () => {
               <path
                 d="M1 1L8 8L1 15"
                 stroke="#404040"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
           </div>
-        )}
+        )} */}
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+          {modalContent === MODAL_CONTENT_TYPES.MESSAGES && (
+            <Table type={"agentMessage"} />
+          )}
+          {modalContent === MODAL_CONTENT_TYPES.EDIT_AGENT && (
+            <h1>{selectedUserId}</h1>
+          )}
+        </Modal>{" "}
       </motion.div>
-      {open && (
-        <Modal
-          setOpen={setOpen}
-          rowData={selectedRowData}
-          field={selectedRowFields}
-          setRowData={setSelectedRowData}
-          setFilteredData={setFilteredData}
-          setTableData={setTableData}
-        />
-      )}
     </>
   );
 };

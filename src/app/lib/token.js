@@ -1,6 +1,6 @@
-"use client"
-import Cookies from "js-cookie"
-import  jwt  from "jsonwebtoken"
+"use client";
+import Cookies from "js-cookie";
+import jwt from "jsonwebtoken";
 
 const token = Cookies.get("token");
 const userDetails = jwt.decode(token);

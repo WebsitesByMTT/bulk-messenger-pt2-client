@@ -1,12 +1,8 @@
-
 import Table from "@/components/Table";
 import React from "react";
-const page = () => {
-  return (
-    <div>
-      <Table/>
-    </div>
-  );
+
+const page = async () => {
+  return <Table />;
 };
 
 export default page;
