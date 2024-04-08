@@ -37,7 +37,7 @@ select:focus-visible {
   -webkit-tap-highlight-color: transparent;
 }
 
-table th,
+/* table th,
 td {
   text-align: center;
   padding: 1rem;
@@ -50,7 +50,7 @@ table td {
   font-size: 1rem;
   color: #404040;
   cursor: default;
-}
+} */
 
 /* table tr {
   border-bottom: solid 1px #8c8c8c;
@@ -165,4 +165,23 @@ input::-webkit-datetime-edit-year-field:focus {
   &::-webkit-scrollbar {
     display: none;
   }
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.status-success,
+.status-active {
+  background: #84c4414d;
+  color: #276956;
+}
+
+.status-failed,
+.status-inactive {
+  background: #ec20254d;
+  color: #7f2600;
+}
+
+.status-pending {
+  background: #ebff004d;
+  color: #c57600;
 }

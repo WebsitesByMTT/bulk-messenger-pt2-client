@@ -1,16 +1,39 @@
 import Table from "@/components/Table";
 import { cookies } from "next/headers";
 import React from "react";
-import { getAllAgents, getAllAgentsDetails, getAllMessages } from "../lib/api";
+import { getAllAgents } from "../lib/new-api";
+import { getCurrentUser } from "../lib/server/utils";
 
 const page = async () => {
-  const cookieStore = cookies();
-  const token = cookieStore.get("token");
-  const agents = await getAllAgents(token);
+  const data = await getAllAgents();
+  const user = await getCurrentUser();
+  const fieldsHeadings = [
+    "ID",
+    "Name",
+    "Username",
+    "Status",
+    "Created At",
+    "Messages",
+    "Edit",
+  ];
+  const fieldsData = [
+    "id",
+    "name",
+    "username",
+    "status",
+    "created_at",
+    "messages",
+    "edit",
+  ];
 
-  const dataHeadings = ""
-
-  return <Table type="agentMessage" data={agents} />;
+  return (
+    <Table
+      type="agentTable"
+      data={data}
+      fieldsHeadings={fieldsHeadings}
+      fieldsData={fieldsData}
+    />
+  );
 };
 
 export default page;

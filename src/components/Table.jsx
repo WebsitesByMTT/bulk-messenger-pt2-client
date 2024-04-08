@@ -1,141 +1,44 @@
 "use client";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import {
-  getAllAgents,
-  getAllMessages,
-  getAllMessagesByUsername,
-  updateAgent,
-} from "@/app/lib/api";
-import userDetails from "@/app/lib/token";
 import Modal from "./Modal";
-import toast from "react-hot-toast";
+import { formatDate, trimMessage } from "@/app/lib/client/utils";
+import { getAgentAllMessages, updateAgentStatus } from "@/app/lib/new-api";
 
 const MODAL_CONTENT_TYPES = {
   MESSAGES: "messages",
   EDIT_AGENT: "editAgent",
 };
 
-const Table = ({ type, data }) => {
-  const pathname = usePathname();
-  const role = userDetails?.role;
+const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState(tableData);
-  const [tableHeaders, setTableHeaders] = useState([]);
-  const [dataFields, setDataFields] = useState([]);
-  const [fieldToSearch, setFieldToSearch] = useState("");
-  const [searched, setSearched] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("All");
-  const [selectedRowData, setSelectedRowData] = useState(null);
-  const [selectedRowFields, setSelectedRowFields] = useState([]);
   const currentDate = new Date().toISOString().split("T")[0];
-  const [createdAtSortOrder, setCreatedAtSortOrder] = useState("asc");
-  const [userStatus, setUserStatus] = useState("");
   const [modalContent, setModalContent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [agentMessages, setAgentMessages] = useState([]);
+  const [agentFieldsHeadings, setAgentFieldsHeadings] = useState([
+    "Message",
+    "Sent To",
+    "Status",
+    "Created At",
+  ]);
+  const [agentFieldsData, setAgentFieldsData] = useState([
+    "message",
+    "sent_to",
+    "status",
+    "created_at",
+  ]);
 
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    // Format the date and time separately
-    const formattedDate = date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    const formattedTime = date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true, // Use 12-hour format
-    });
-
-    return { formattedDate, formattedTime };
-  }
-
-  //getAllAgents
-  // function fetch(para) {
-  //   (async () => {
-  //     try {
-  //       const agentData = await para();
-  //       setTableData(agentData);
-  //       setFilteredData(agentData);
-  //       console.log(agentData.created_at);
-  //     } catch (error) {
-  //       console.error("Error fetching agent data:", error);
-  //     }
-  //   })();
-  // }
-
-  // set table according to requirement
   useEffect(() => {
-    switch (role) {
-      case "admin":
-        switch (pathname) {
-          case "/message":
-            setTableHeaders(["Message", "Sent to", "Agent"]);
-            setDataFields(["message", "sent_to", "agent"]);
-            fetch(getAllMessages);
-            setFieldToSearch("agent");
-            break;
-          case "/agents":
-            if (type === "agentMessage") {
-            }
-            setTableHeaders(["Name", "Username", "Password"]);
-            setDataFields(["name", "username", "password"]);
-            fetch(getAllAgents);
-            setFieldToSearch("name");
-            break;
-        }
-        break;
+    console.log("HERE IS DATA");
+    console.log(type, data, fieldsHeadings, fieldsData);
+    setTableData(data);
+    setFilteredData(data);
+  }, []);
 
-      case "agent":
-        switch (pathname) {
-          case "/message":
-            setTableHeaders(["Message", "User ID", "Facebook Id"]);
-            setDataFields(["message", "agent", "sent_to"]);
-            fetch(getAllMessagesByUsername);
-            setFieldToSearch("agent");
-            break;
-        }
-        break;
-
-      default:
-        break;
-    }
-  }, [role, pathname]);
-
-  // Search according to field
-  useEffect(() => {
-    if (!searched.trim()) {
-      setFilteredData(tableData);
-    } else {
-      setFilteredData(() =>
-        tableData.filter(
-          (item) =>
-            item[fieldToSearch] &&
-            item[fieldToSearch]
-              .toString()
-              .toLowerCase()
-              .includes(searched.toLowerCase())
-        )
-      );
-    }
-  }, [searched, fieldToSearch, tableData]);
-
-  // Filter according to status
-  const handleStatusChange = (e) => {
-    const selectedStatus = e.target.value;
-    setSelectedStatus(selectedStatus);
-    setFilteredData(
-      tableData.filter((data) => {
-        if (selectedStatus === "All") return true;
-        return data.status === selectedStatus;
-      })
-    );
-  };
-
-  // Filter according to date
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
     setFilteredData(
@@ -147,53 +50,6 @@ const Table = ({ type, data }) => {
     );
   };
 
-  // Filter according to time
-  const handleTimeChange = (e) => {
-    const selectedTime = e.target.value;
-    if (selectedTime === "all") {
-      return tableData;
-    }
-    setFilteredData(() =>
-      tableData.filter((record) => {
-        const createdAt = new Date(record.created_at);
-        const createdAtHour = createdAt.getHours() % 12 || 12;
-        const selectedHour = parseInt(selectedTime);
-        return (
-          createdAtHour >= selectedHour && createdAtHour < selectedHour + 1
-        );
-      })
-    );
-    return filteredData;
-  };
-
-  const sortDataHandler = () => {
-    const dataToSort = filteredData.length > 0 ? filteredData : tableData;
-
-    const sortedData = [...dataToSort].sort((a, b) => {
-      const dateA = new Date(a.created_at).getTime(); // Parse and convert to numeric timestamp
-      const dateB = new Date(b.created_at).getTime(); // Parse and convert to numeric timestamp
-      const sortOrder = createdAtSortOrder;
-
-      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
-    });
-
-    setFilteredData(sortedData);
-    setCreatedAtSortOrder(createdAtSortOrder === "asc" ? "desc" : "asc");
-  };
-
-  const changeUserStatusHandler = async (username, status, newStatus) => {
-    try {
-      setUserStatus(newStatus);
-      const response = await updateAgent(username, { status: newStatus });
-      console.log(response.data);
-      if (response.data.success) toast.success(response.data.message);
-      else toast.error(response.data.message);
-    } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong : Unable to update status");
-    }
-  };
-
   const handleOpenEditModal = (userId) => {
     setSelectedUserId(userId);
     setModalContent(MODAL_CONTENT_TYPES.EDIT_AGENT);
@@ -201,14 +57,60 @@ const Table = ({ type, data }) => {
   };
 
   const handleOpenMessagesModal = (userId) => {
-    setSelectedUserId(userId);
-    setModalContent(MODAL_CONTENT_TYPES.MESSAGES);
-    setIsModalOpen(true);
+    console.log("USER : ", userId);
+    getAgentAllMessages(userId)
+      .then((messages) => {
+        setAgentMessages(messages);
+        setSelectedUserId(userId);
+        setModalContent(MODAL_CONTENT_TYPES.MESSAGES);
+        setIsModalOpen(true);
+      })
+      .catch((error) => {
+        console.log("Failed to fetch messages : ", error);
+      });
+
+    // setModalContent(MODAL_CONTENT_TYPES.MESSAGES);
+    // setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  const filterDataBySearch = (data) => {
+    if (!searchInput) return data;
+    return data.filter((item) =>
+      Object.values(item).some((value) =>
+        String(value).toLowerCase().includes(searchInput.toLowerCase())
+      )
+    );
+  };
+
+  const statusChangeHandler = (e) => {
+    const selectedStatus = e.target.value;
+
+    const data =
+      selectedStatus === "all"
+        ? tableData
+        : tableData.filter((item) => item.status === selectedStatus);
+
+    setFilteredData(data);
+  };
+
+  const updateStatusChangeHadler = (e, username) => {
+    console.log("CHNA : ", e.target.value, " : ", username);
+    updateAgentStatus(username, { status: e.target.value })
+      .then((res) => {
+        console.log("UPDATE HUS : ", res);
+        alert("Updated");
+      })
+      .catch((error) => console.log("Unable to Update", error));
+  };
+
+  useEffect(() => {
+    const newData = filterDataBySearch(data);
+    setFilteredData(newData);
+  }, [searchInput]);
 
   return (
     <>
@@ -237,9 +139,8 @@ const Table = ({ type, data }) => {
             <input
               className="bg-transparent"
               placeholder="search"
-              onChange={(e) => {
-                setSearched(e.target.value);
-              }}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
             />
           </div>
           <div>
@@ -253,139 +154,103 @@ const Table = ({ type, data }) => {
             />
           </div>
         </div>
-        <table className="w-full">
+        <table className=" w-ful">
           <thead>
-            <tr className=" border-b-[1px] border-[#8c8c8c]">
-              {tableHeaders?.map((header, index) => (
-                <th key={index}>{header}</th>
-              ))}
-              {pathname === "/agents" ? (
-                <th>Status</th>
-              ) : (
-                <th>
-                  <select
-                    className="p-2 bg-transparent"
-                    defaultValue="Status"
-                    onChange={handleStatusChange}
-                  >
-                    <option hidden value="Status">
-                      Status
-                    </option>
-                    <option value="All">All</option>
-                    <option value="success">success</option>
-                    <option value="failed">failed</option>
-                  </select>
-                </th>
-              )}
-
-              <th
-                className=" flex items-center justify-center gap-4"
-                onClick={sortDataHandler}
-              >
-                <span>Created At</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className={`${createdAtSortOrder}`}
-                >
-                  <path d="m3 16 4 4 4-4" />
-                  <path d="M7 20V4" />
-                  <path d="m21 8-4-4-4 4" />
-                  <path d="M17 4v16" />
-                </svg>
-              </th>
-
-              {pathname === "/agents" && type === undefined && (
-                <>
-                  <th>Messages</th>
-                  <th>Edit</th>
-                </>
-              )}
+            <tr className=" border-b border-black">
+              {fieldsHeadings.map((heading, index) => {
+                switch (heading) {
+                  case "Status":
+                    return (
+                      <td
+                        className={`text-base font-bold m-0 text-[#252727] text-center py-4 px-2`}
+                      >
+                        <select
+                          defaultValue="Status"
+                          onChange={statusChangeHandler}
+                          className=" bg-transparent"
+                        >
+                          <option hidden value="Status">
+                            {heading}
+                          </option>
+                          <option value="all">All</option>
+                          {type === "agentTable" && (
+                            <>
+                              <option value="active">Active</option>
+                              <option value="inactive">Inactive</option>
+                            </>
+                          )}
+                          {type === "agentMessage" && (
+                            <>
+                              <option value="success">Success</option>
+                              <option value="failed">Failed</option>
+                              <option value="pending">Pending</option>
+                            </>
+                          )}
+                        </select>
+                      </td>
+                    );
+                  default:
+                    return (
+                      <td
+                        className={`text-base font-bold m-0 text-[#252727] text-center py-4 px-2`}
+                      >
+                        {heading}
+                      </td>
+                    );
+                }
+              })}
             </tr>
           </thead>
           <tbody>
-            {filteredData?.length > 0 ? (
-              <>
-                {filteredData?.map((data, index) => {
-                  const { formattedDate, formattedTime } = formatDate(
-                    data.created_at
-                  );
-                  return (
-                    <tr
-                      key={data.id}
-                      className=" hover:bg-[whitesmoke] transition-all"
-                    >
-                      {dataFields.map((field, index) => (
-                        <td key={index}>
-                          {field === "password"
-                            ? data[field].substring(0, 9)
-                            : field === "message"
-                            ? data[field].substring(0, 20)
-                            : data[field]}
-                        </td>
-                      ))}
-                      {pathname === "/message" && (
-                        <td>
-                          <div
-                            className={` ${
-                              data.status === "success"
-                                ? "bg-[#84c4414d] text-[#276956]"
-                                : "bg-[#ec20254d] text-[#7f2600]"
-                            } ${
-                              data.status === "pending"
-                                ? "bg-[#ebff004d] text-[#c57600]"
-                                : ""
-                            } w-[100%] capitalize p-2 rounded-2xl text-center `}
-                          >
-                            <span
-                              className={`${
-                                data.status === "success"
-                                  ? "text-[#276956]"
-                                  : "text-[#7F2600]"
-                              } w-[90%] capitalize`}
-                            >
-                              {data.status}
-                            </span>
-                          </div>
-                        </td>
-                      )}
-                      {pathname === "/agents" && (
-                        <td className="">
-                          <select
-                            defaultValue={data.status}
-                            onChange={(e) =>
-                              changeUserStatusHandler(
-                                data.username,
-                                data.status,
-                                e.target.value
-                              )
-                            }
-                            className={`${
-                              data.status === "active"
-                                ? "text-[#276956] bg-[#84c4414d]"
-                                : "text-[#7f2600] bg-[#ec20254d]"
-                            } w-[100%] capitalize p-2 rounded-2xl text-center appearance-none cursor-pointer`}
-                          >
-                            <option value="active">active</option>
-                            <option value="inactive">inactive</option>
-                          </select>
-                        </td>
-                      )}
-                      <td className="time">
-                        <p>{formattedTime}</p>
-                        <p>{formattedDate}</p>
-                      </td>
-                      {pathname === "/agents" && type == undefined && (
-                        <>
+            {filteredData.map((data, idx) => {
+              const { formattedDate, formattedTime } = formatDate(
+                data.created_at
+              );
+              return (
+                <tr key={idx} className=" hover:bg-[whitesmoke] cursor-pointer">
+                  {fieldsData.map((field) => {
+                    switch (field) {
+                      case "created_at":
+                        return (
+                          <td className="p-2  text-center text-base">
+                            <p>{formattedTime}</p>
+                            <p className=" text-sm">{formattedDate}</p>
+                          </td>
+                        );
+                      case "message":
+                        return (
+                          <td className={`p-2 text-center text-base`}>
+                            {trimMessage(data[field])}
+                          </td>
+                        );
+                      case "status":
+                        return (
+                          <td className={`p-2  text-center text-base`}>
+                            {type === "agentMessage" && (
+                              <div
+                                className={`${field}-${data[field]} py-2 px-4 text-center rounded-3xl text-base`}
+                              >
+                                {data[field]}
+                              </div>
+                            )}
+                            {type === "agentTable" && (
+                              <select
+                                defaultValue={`${data[field]}`}
+                                onChange={(e) =>
+                                  updateStatusChangeHadler(e, data.username)
+                                }
+                              >
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                              </select>
+                            )}
+                          </td>
+                        );
+
+                      case "messages":
+                        return (
                           <td
-                            className=""
+                            className={`p-2  text-center text-base m-auto`}
                             onClick={() =>
                               handleOpenMessagesModal(data?.username)
                             }
@@ -401,6 +266,7 @@ const Table = ({ type, data }) => {
                                 stroke-width="2"
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
+                                className="lucide lucide-message-square-text"
                               >
                                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                                 <path d="M13 8H7" />
@@ -408,11 +274,14 @@ const Table = ({ type, data }) => {
                               </svg>
                             </div>
                           </td>
+                        );
+                      case "edit":
+                        return (
                           <td
-                            className=""
+                            className={`p-2  text-center text-base`}
                             onClick={() => handleOpenEditModal(data?.username)}
                           >
-                            <div className=" flex items-center justify-center">
+                            <div className="flex items-center justify-center">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -431,61 +300,34 @@ const Table = ({ type, data }) => {
                               </svg>
                             </div>
                           </td>
-                        </>
-                      )}
-                    </tr>
-                  );
-                })}
-              </>
-            ) : (
-              <tr className="w-full relative">
-                <div class="loader"></div>
-              </tr>
-            )}
+                        );
+
+                      default:
+                        return (
+                          <td className={`p-2 text-center text-base`}>
+                            {data[field]}
+                          </td>
+                        );
+                    }
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
-        {/* {filteredData?.length > 10 && (
-          <div className="flex justify-end gap-[30px]">
-            <svg
-              width="9"
-              height="16"
-              viewBox="0 0 9 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8 15L1 8L8 1"
-                stroke="#404040"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <svg
-              width="9"
-              height="16"
-              viewBox="0 0 9 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 1L8 8L1 15"
-                stroke="#404040"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-        )} */}
         <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
           {modalContent === MODAL_CONTENT_TYPES.MESSAGES && (
-            <Table type={"agentMessage"} />
+            <Table
+              type="agentMessage"
+              data={agentMessages}
+              fieldsHeadings={agentFieldsHeadings}
+              fieldsData={agentFieldsData}
+            />
           )}
           {modalContent === MODAL_CONTENT_TYPES.EDIT_AGENT && (
             <h1>{selectedUserId}</h1>
           )}
-        </Modal>{" "}
+        </Modal>
       </motion.div>
     </>
   );
