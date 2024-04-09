@@ -34,11 +34,10 @@ textarea:focus-visible,
 input:focus-visible,
 select:focus-visible {
   outline: none;
--webkit-tap-highlight-color: transparent;
-
+  -webkit-tap-highlight-color: transparent;
 }
 
-table th,
+/* table th,
 td {
   text-align: center;
   padding: 1rem;
@@ -51,11 +50,11 @@ table td {
   font-size: 1rem;
   color: #404040;
   cursor: default;
-}
+} */
 
-table tr {
+/* table tr {
   border-bottom: solid 1px #8c8c8c;
-}
+} */
 
 .hideScrollbar::-webkit-scrollbar {
   display: none;
@@ -74,11 +73,153 @@ table tr {
   display: flex;
 }
 
-
 input::-webkit-datetime-edit-day-field:focus,
 input::-webkit-datetime-edit-month-field:focus,
 input::-webkit-datetime-edit-year-field:focus {
-    background-color: transparent;
-    color: black;
-    outline: none;
+  background-color: transparent;
+  color: black;
+  outline: none;
+}
+
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border-left-color: transparent;
+  margin-top: 32px;
+
+  animation: spin89345 1s linear infinite;
+}
+
+@keyframes spin89345 {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.modal {
+  position: fixed; /* Fixed positioning */
+  top: 0; /* Align to the top */
+  left: 0; /* Align to the left */
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  display: flex; /* Use flexbox for centering */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  z-index: 9999; /* Ensure it's above all other content */
+  transition: all 0.2s ease-in-out;
+
+  .close-modal {
+    position: absolute;
+    top: 11%;
+    right: 10.5%;
+
+    border: none;
+    background: none;
+    z-index: 3;
+
+    svg {
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+    }
+
+    svg:hover {
+      stroke: red;
+    }
+  }
+
+  .modal-back-close {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    cursor: pointer;
+    z-index: 1;
+  }
+}
+
+.modal-content {
+  /* position: relative; */
+  background-color: white; /* Background color for the modal content */
+  padding: 20px; /* Padding around the content */
+  border-radius: 4px; /* Rounded corners */
+  width: 80%; /* Width of the modal content */
+  height: 80%;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  /* max-width: 500px;  */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  z-index: 2;
+  transition: all 0.2s ease-in-out;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.status-success,
+.status-active {
+  background: #84c4414d;
+  color: #276956;
+}
+
+.status-failed,
+.status-inactive {
+  background: #ec20254d;
+  color: #7f2600;
+}
+
+.status-pending {
+  background: #ebff004d;
+  color: #c57600;
+}
+
+.loading svg {
+  width: 3.25em;
+  transform-origin: center;
+  animation: rotate4 2s linear infinite;
+
+  circle {
+    fill: none;
+    stroke: hsl(214, 97%, 59%);
+    stroke-width: 2;
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    stroke-linecap: round;
+    animation: dash4 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes rotate4 {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash4 {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 90, 200;
+    stroke-dashoffset: -35px;
+  }
+
+  100% {
+    stroke-dashoffset: -125px;
+  }
 }

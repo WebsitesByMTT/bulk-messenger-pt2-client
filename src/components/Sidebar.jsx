@@ -2,53 +2,50 @@
 import Link from "next/link";
 import LoginImage from "../assets/LoginImage.png";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { getCurrentUser } from "@/app/lib/server/utils";
 import { useEffect, useState } from "react";
-import userDetails from "@/app/lib/token";
+import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
 const Sidebar = () => {
   const pathname = usePathname();
-  const role = userDetails?.role;
-  const username = userDetails?.username;
-  const route = useRouter();
-  const [menus, setMenus] = useState([]);
+  const router = useRouter();
+  const [user, setUser] = useState(null);
+  const [menus, setMenus] = useState([
+    {
+      id: 1,
+      name: "Messages",
+      link: "/message",
+    },
+  ]);
 
   useEffect(() => {
-    if (role === "admin") {
-      setMenus([
-        {
-          id: 1,
-          name: " Message",
-          link: "/message",
-        },
-        {
-          id: 2,
-          name: "Agents",
-          link: "/agents",
-        },
-        {
-          id: 3,
-          name: "Create",
-          link: "/create",
-        },
-      ]);
-    } else if (role === "agent") {
-      setMenus([
-        {
-          id: 1,
-          name: "New message",
-          link: "/newmessage",
-        },
-        {
-          id: 2,
-          name: "History",
-          link: "/message",
-        },
-      ]);
-    }
-  }, [role]);
+    (async () => {
+      const user = await getCurrentUser();
+      if (user?.role === "admin") {
+        setMenus([
+          ...menus,
+          {
+            id: 2,
+            name: "Agents",
+            link: "/agents",
+          },
+          {
+            id: 3,
+            name: "Create",
+            link: "/create",
+          },
+        ]);
+      }
+      setUser(user);
+    })();
+  }, []);
+
+  const handleLogout = () => {
+    console.log("Logout");
+    Cookies.remove("token");
+    router.push("/login");
+  };
 
   return (
     <div
@@ -141,17 +138,10 @@ const Sidebar = () => {
             />
           </div>
           <div>
-            <h3 className="text-lg font-semibold">{username}</h3>
+            <h3 className="text-lg font-semibold">{user?.username}</h3>
           </div>
         </div>
-        <Link
-          href="/login"
-          className="w-[10%]"
-          onClick={() => {
-            Cookies.remove("token");
-            route.push("/login");
-          }}
-        >
+        <div className=" w-1/6 cursor-pointer" onClick={handleLogout}>
           <svg
             width="100%"
             height="45%"
@@ -167,7 +157,7 @@ const Sidebar = () => {
               strokeLinejoin="round"
             />
           </svg>
-        </Link>
+        </div>
       </div>
     </div>
   );
