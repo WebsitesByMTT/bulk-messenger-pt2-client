@@ -1,6 +1,7 @@
 "use server";
 import axios from "axios";
 import { getCookie } from "./server/utils";
+import { revalidatePath } from "next/cache";
 
 export const getAllAgentsMessage = async () => {
   const token = await getCookie();
@@ -61,7 +62,7 @@ export const getAllAgents = async () => {
   }
 };
 
-export const updateAgentStatus = async (username, data) => {
+export const updateAgentByUsername = async (username, data) => {
   console.log("USERNAME : ", username, data);
   const token = await getCookie();
   const headers = {
@@ -70,15 +71,18 @@ export const updateAgentStatus = async (username, data) => {
       Authorization: `Bearer ${token}`,
     },
   };
+
   try {
     const response = await axios.put(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/agents/${username}`,
       data,
       headers
     );
-
-    return response;
+    revalidatePath("/agents");
+    return response?.data;
   } catch (error) {
-    console.log("Error  : ", error.message);
+    console.error("Update failed:", error);
   }
+
+  console.log("hEADER : ", headers);
 };

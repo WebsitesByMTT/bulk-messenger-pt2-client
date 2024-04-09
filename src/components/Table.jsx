@@ -2,12 +2,16 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
-import { formatDate, trimMessage } from "@/app/lib/client/utils";
+import { formatDate, sortData, trimMessage } from "@/app/lib/client/utils";
 import { getAgentAllMessages, updateAgentStatus } from "@/app/lib/new-api";
+import Edit from "./Edit";
+import toast from "react-hot-toast";
+import ViewMessage from "./ViewMessage";
 
 const MODAL_CONTENT_TYPES = {
   MESSAGES: "messages",
   EDIT_AGENT: "editAgent",
+  VIEW_MESSAGE: "viewMessage",
 };
 
 const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
@@ -16,9 +20,12 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
   const currentDate = new Date().toISOString().split("T")[0];
   const [modalContent, setModalContent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [agentMessages, setAgentMessages] = useState([]);
+  const [fliteredCount, setFilteredCount] = useState(0);
+  const [selectedMessage, setSelectedMessage] = useState({});
+
   const [agentFieldsHeadings, setAgentFieldsHeadings] = useState([
     "Message",
     "Sent To",
@@ -31,46 +38,59 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
     "status",
     "created_at",
   ]);
+  const [createdAtSortOrder, setCreatedAtSortOrder] = useState("asc");
 
   useEffect(() => {
-    console.log("HERE IS DATA");
-    console.log(type, data, fieldsHeadings, fieldsData);
     setTableData(data);
     setFilteredData(data);
   }, []);
 
-  const handleDateChange = (e) => {
-    const selectedDate = e.target.value;
-    setFilteredData(
-      tableData.filter((item) => {
-        const itemDate = new Date(item.created_at).toISOString().split("T")[0];
+  useEffect(() => {
+    const newData = filterDataBySearch(data);
+    setFilteredData(newData);
+  }, [searchInput]);
 
-        return itemDate === selectedDate;
-      })
-    );
+  useEffect(() => {
+    setFilteredCount(filteredData.length);
+  }, [filteredData]);
+
+  const handleDateChange = (e) => {
+    const date = e.target.value;
+
+    const filteredData = date
+      ? data.filter(
+          (item) =>
+            new Date(item.created_at).toDateString() ===
+            new Date(date).toDateString()
+        )
+      : data;
+    console.log(filteredData);
+
+    setFilteredData(filteredData);
   };
 
-  const handleOpenEditModal = (userId) => {
-    setSelectedUserId(userId);
+  const handleOpenEditModal = (user) => {
+    setSelectedUser(user);
     setModalContent(MODAL_CONTENT_TYPES.EDIT_AGENT);
     setIsModalOpen(true);
   };
 
-  const handleOpenMessagesModal = (userId) => {
-    console.log("USER : ", userId);
-    getAgentAllMessages(userId)
+  const handleOpenMessagesModal = (user) => {
+    getAgentAllMessages(user?.username)
       .then((messages) => {
         setAgentMessages(messages);
-        setSelectedUserId(userId);
-        setModalContent(MODAL_CONTENT_TYPES.MESSAGES);
-        setIsModalOpen(true);
+        setSelectedUser(user);
+
+        if (messages.length <= 0) {
+          toast.success(`Data not available : ${selectedUser.name}`);
+        } else {
+          setModalContent(MODAL_CONTENT_TYPES.MESSAGES);
+          setIsModalOpen(true);
+        }
       })
       .catch((error) => {
         console.log("Failed to fetch messages : ", error);
       });
-
-    // setModalContent(MODAL_CONTENT_TYPES.MESSAGES);
-    // setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
@@ -97,20 +117,13 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
     setFilteredData(data);
   };
 
-  const updateStatusChangeHadler = (e, username) => {
-    console.log("CHNA : ", e.target.value, " : ", username);
-    updateAgentStatus(username, { status: e.target.value })
-      .then((res) => {
-        console.log("UPDATE HUS : ", res);
-        alert("Updated");
-      })
-      .catch((error) => console.log("Unable to Update", error));
+  const handleViewData = (data) => {
+    if (type === "agentMessage") {
+      setSelectedMessage(data);
+      setModalContent(MODAL_CONTENT_TYPES.VIEW_MESSAGE);
+      setIsModalOpen(true);
+    }
   };
-
-  useEffect(() => {
-    const newData = filterDataBySearch(data);
-    setFilteredData(newData);
-  }, [searchInput]);
 
   return (
     <>
@@ -137,20 +150,23 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
               <path d="m21 21-4.3-4.3" />
             </svg>
             <input
-              className="bg-transparent"
+              className=" w-full bg-transparent"
               placeholder="search"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
             />
           </div>
-          <div>
+          <div className=" flex items-center gap-8">
+            <div>
+              <span>Total : {fliteredCount}</span>
+            </div>
             <input
               type="date"
               name="date"
               onChange={handleDateChange}
-              defaultValue={currentDate}
+              // defaultValue={currentDate}
               max={currentDate}
-              className="border-[#8C8C8C] border-2 p-1 rounded-lg"
+              className="border-[#8C8C8C] border p-1 rounded-lg"
             />
           </div>
         </div>
@@ -167,7 +183,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                         <select
                           defaultValue="Status"
                           onChange={statusChangeHandler}
-                          className=" bg-transparent"
+                          className=" bg-transparent text-center"
                         >
                           <option hidden value="Status">
                             {heading}
@@ -189,6 +205,52 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                         </select>
                       </td>
                     );
+
+                  case "Created At":
+                    return (
+                      <td
+                        className={`text-base font-bold m-0 text-[#252727] text-center py-4 px-2 cursor-pointer`}
+                        onClick={() =>
+                          sortData(
+                            "created_at",
+                            tableData,
+                            filteredData,
+                            setFilteredData,
+                            createdAtSortOrder,
+                            setCreatedAtSortOrder
+                          )
+                        }
+                      >
+                        <div className=" flex items-center justify-center gap-2">
+                          {heading}
+
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className={`${createdAtSortOrder}`}
+                            style={{
+                              transform:
+                                createdAtSortOrder === "asc"
+                                  ? "rotate(0deg)"
+                                  : "rotate(180deg)",
+                              transition: "transform 0.3s ease-in-out",
+                            }}
+                          >
+                            <path d="m3 16 4 4 4-4" />
+                            <path d="M7 20V4" />
+                            <path d="m21 8-4-4-4 4" />
+                            <path d="M17 4v16" />
+                          </svg>
+                        </div>
+                      </td>
+                    );
                   default:
                     return (
                       <td
@@ -207,7 +269,11 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                 data.created_at
               );
               return (
-                <tr key={idx} className=" hover:bg-[whitesmoke] cursor-pointer">
+                <tr
+                  key={idx}
+                  className=" hover:bg-[whitesmoke] cursor-pointer"
+                  onClick={() => handleViewData(data)}
+                >
                   {fieldsData.map((field) => {
                     switch (field) {
                       case "created_at":
@@ -226,24 +292,11 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                       case "status":
                         return (
                           <td className={`p-2  text-center text-base`}>
-                            {type === "agentMessage" && (
-                              <div
-                                className={`${field}-${data[field]} py-2 px-4 text-center rounded-3xl text-base`}
-                              >
-                                {data[field]}
-                              </div>
-                            )}
-                            {type === "agentTable" && (
-                              <select
-                                defaultValue={`${data[field]}`}
-                                onChange={(e) =>
-                                  updateStatusChangeHadler(e, data.username)
-                                }
-                              >
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                              </select>
-                            )}
+                            <div
+                              className={`${field}-${data[field]} py-2 px-4 text-center rounded-3xl text-base`}
+                            >
+                              {data[field]}
+                            </div>
                           </td>
                         );
 
@@ -251,9 +304,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                         return (
                           <td
                             className={`p-2  text-center text-base m-auto`}
-                            onClick={() =>
-                              handleOpenMessagesModal(data?.username)
-                            }
+                            onClick={() => handleOpenMessagesModal(data)}
                           >
                             <div className=" flex items-center justify-center">
                               <svg
@@ -266,7 +317,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                                 stroke-width="2"
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
-                                className="lucide lucide-message-square-text"
+                                className="lucide lucide-message-square-text hover:stroke-blue-600"
                               >
                                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                                 <path d="M13 8H7" />
@@ -279,7 +330,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                         return (
                           <td
                             className={`p-2  text-center text-base`}
-                            onClick={() => handleOpenEditModal(data?.username)}
+                            onClick={() => handleOpenEditModal(data)}
                           >
                             <div className="flex items-center justify-center">
                               <svg
@@ -325,7 +376,11 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
             />
           )}
           {modalContent === MODAL_CONTENT_TYPES.EDIT_AGENT && (
-            <h1>{selectedUserId}</h1>
+            <Edit user={selectedUser} onClose={handleCloseModal} />
+          )}
+
+          {modalContent === MODAL_CONTENT_TYPES.VIEW_MESSAGE && (
+            <ViewMessage message={selectedMessage} />
           )}
         </Modal>
       </motion.div>

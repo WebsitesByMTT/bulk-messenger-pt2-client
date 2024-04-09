@@ -27,3 +27,25 @@ export const getCurrenUserDetail = async () => {
   const user = await getCurrentUser();
   return user;
 };
+
+export const sortData = (
+  column,
+  data,
+  filteredData,
+  setFilteredData,
+  createdAtSortOrder,
+  setCreatedAtSortOrder
+) => {
+  const dataToSort = filteredData.length > 0 ? filteredData : data;
+
+  const sortedData = [...dataToSort].sort((a, b) => {
+    const dateA = new Date(a[column]).getTime();
+    const dateB = new Date(b[column]).getTime();
+    const sortOrder = createdAtSortOrder;
+
+    return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+  });
+
+  setFilteredData(sortedData);
+  setCreatedAtSortOrder(createdAtSortOrder === "asc" ? "desc" : "asc");
+};
