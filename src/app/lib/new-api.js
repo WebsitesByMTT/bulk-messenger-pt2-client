@@ -86,3 +86,23 @@ export const updateAgentByUsername = async (username, data) => {
 
   console.log("hEADER : ", headers);
 };
+
+export const deleteAgentByUsername = async (username) => {
+  const token = await getCookie();
+  const headers = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  try {
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/agents/${username}`,
+      headers
+    );
+    return response?.data;
+  } catch (error) {
+    console.error("Update failed:", error);
+  }
+};

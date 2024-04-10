@@ -1,6 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import { revalidateTag } from "next/cache";
 
 export const getCookie = async () => {
   const cookieStore = cookies();
@@ -13,3 +14,7 @@ export const getCurrentUser = async () => {
   const user = jwt.decode(token);
   return user;
 };
+
+export default async function action() {
+  revalidateTag("/agents");
+}
