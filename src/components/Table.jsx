@@ -16,15 +16,18 @@ const MODAL_CONTENT_TYPES = {
 
 const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
   const [tableData, setTableData] = useState([]);
-  const [filteredData, setFilteredData] = useState(tableData);
+  const [filteredData, setFilteredData] = useState(tableData || []);
   const currentDate = new Date().toISOString().split("T")[0];
   const [modalContent, setModalContent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [searchInput, setSearchInput] = useState("");
   const [agentMessages, setAgentMessages] = useState([]);
   const [fliteredCount, setFilteredCount] = useState(0);
   const [selectedMessage, setSelectedMessage] = useState({});
+
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("all");
 
   const [agentFieldsHeadings, setAgentFieldsHeadings] = useState([
     "Message",
@@ -53,21 +56,6 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
   useEffect(() => {
     setFilteredCount(filteredData.length);
   }, [filteredData]);
-
-  const handleDateChange = (e) => {
-    const date = e.target.value;
-
-    const filteredData = date
-      ? data.filter(
-          (item) =>
-            new Date(item.created_at).toDateString() ===
-            new Date(date).toDateString()
-        )
-      : data;
-    console.log(filteredData);
-
-    setFilteredData(filteredData);
-  };
 
   const handleOpenEditModal = (user) => {
     setSelectedUser(user);
@@ -106,23 +94,61 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
     );
   };
 
-  const statusChangeHandler = (e) => {
-    const selectedStatus = e.target.value;
-
-    const data =
-      selectedStatus === "all"
-        ? tableData
-        : tableData.filter((item) => item.status === selectedStatus);
-
-    setFilteredData(data);
-  };
-
   const handleViewData = (data) => {
     if (type === "agentMessage") {
       setSelectedMessage(data);
       setModalContent(MODAL_CONTENT_TYPES.VIEW_MESSAGE);
       setIsModalOpen(true);
     }
+  };
+
+  const applyAllFilters = (data) => {
+    let filteredData = Array.isArray(data) ? data : [];
+
+    // Apply search filter
+    if (searchInput) {
+      filteredData = filteredData.filter((item) =>
+        Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(searchInput.toLowerCase())
+        )
+      );
+    }
+
+    // Apply status filter
+    if (selectedStatus !== "all") {
+      filteredData = filteredData.filter(
+        (item) => item.status === selectedStatus
+      );
+    }
+
+    // Apply date filter
+    if (selectedDate) {
+      console.log("SELECTED DATA : ", selectedDate);
+      filteredData = filteredData.filter(
+        (item) =>
+          new Date(item.created_at).toDateString() ===
+          new Date(selectedDate).toDateString()
+      );
+    }
+
+    return filteredData;
+  };
+
+  useEffect(() => {
+    const newData = applyAllFilters(data);
+    setFilteredData(newData);
+  }, [data, searchInput, selectedStatus, selectedDate]);
+
+  const statusChangeHandler = (e) => {
+    setSelectedStatus(e.target.value);
+  };
+
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value);
+  };
+
+  const handleSearchInputChange = (e) => {
+    setSearchInput(e.target.value);
   };
 
   return (
@@ -153,7 +179,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
               className=" w-full bg-transparent"
               placeholder="search"
               value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
+              onChange={handleSearchInputChange}
             />
           </div>
           <div className=" flex items-center gap-8">
