@@ -1,9 +1,15 @@
-import { updateAgentByUsername } from "@/app/lib/new-api";
+import {
+  deleteAgentByUsername,
+  updateAgentByUsername,
+} from "@/app/lib/new-api";
+import action from "@/app/lib/server/utils";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
 const Edit = ({ user, onClose }) => {
+  const router = useRouter();
   const [formState, setFormState] = useState({
     name: user.name,
     username: user.username,
@@ -19,6 +25,7 @@ const Edit = ({ user, onClose }) => {
       [name]: value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -46,10 +53,28 @@ const Edit = ({ user, onClose }) => {
 
     if (response.success) {
       toast.success(response.message);
-      onClose();
+      await action();
+      // onClose();
     } else {
       toast.error(response.message);
     }
+  };
+
+  const handleDeleteUser = (username) => {
+    console.log("DDLETE : ", username);
+    deleteAgentByUsername(username)
+      .then((res) => {
+        console.log(res);
+        if (res.success) {
+          toast.success(res.message);
+          onClose();
+        } else {
+          toast.error(res.message);
+        }
+      })
+      .catch((error) => {
+        console.log("Failed to Delete : ", username);
+      });
   };
 
   return (
@@ -69,7 +94,7 @@ const Edit = ({ user, onClose }) => {
                 type="text"
                 name="name"
                 placeholder="John"
-                autocomplete="given-name"
+                autoComplete="given-name"
                 class="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
                 value={formState.name}
                 onChange={handleChange}
@@ -87,7 +112,7 @@ const Edit = ({ user, onClose }) => {
                 type="text"
                 name="username"
                 placeholder="Doe"
-                autocomplete="family-name"
+                autoComplete="family-name"
                 class="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
                 value={formState.username}
                 onChange={handleChange}
@@ -106,7 +131,7 @@ const Edit = ({ user, onClose }) => {
             type="password"
             name="password"
             placeholder="********"
-            autocomplete="new-password"
+            autoComplete="new-password"
             class="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
             value={formState.password}
             onChange={handleChange}
@@ -122,7 +147,7 @@ const Edit = ({ user, onClose }) => {
             type="password"
             name="passwordConfirm"
             placeholder="********"
-            autocomplete="new-password"
+            autoComplete="new-password"
             class="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
             value={formState.passwordConfirm}
             onChange={handleChange}
@@ -149,6 +174,13 @@ const Edit = ({ user, onClose }) => {
             class="w-full py-3 mt-6 font-medium tracking-widest text-white uppercase bg-black shadow-lg focus:outline-none hover:bg-gray-900 hover:shadow-none"
           >
             Update
+          </button>
+          <button
+            type="button"
+            onClick={() => handleDeleteUser(user?.username)}
+            className="w-full py-3 mt-6 font-medium tracking-widest text-white uppercase bg-red-500 shadow-lg focus:outline-none hover:bg-red-700 hover:shadow-none"
+          >
+            Delete
           </button>
         </form>
       </div>

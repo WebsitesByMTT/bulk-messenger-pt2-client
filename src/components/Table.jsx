@@ -143,8 +143,8 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
               fill="none"
               stroke="currentColor"
               stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.3-4.3" />
@@ -315,8 +315,8 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                                 fill="none"
                                 stroke="currentColor"
                                 stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                                 className="lucide lucide-message-square-text hover:stroke-blue-600"
                               >
                                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -341,8 +341,8 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                                 fill="none"
                                 stroke="currentColor"
                                 stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                                 className="lucide lucide-ellipsis-vertical"
                               >
                                 <circle cx="12" cy="12" r="1" />

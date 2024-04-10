@@ -17,8 +17,8 @@ const Modal = ({ children, isOpen, onClose }) => {
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
+          strokeWidth="2"
+          strokeLinecap="round"
           strokeLinejoin="round"
           className="lucide lucide-x"
         >
