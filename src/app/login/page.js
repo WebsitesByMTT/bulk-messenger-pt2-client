@@ -28,6 +28,8 @@ const Page = () => {
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/users/login`,
         formData
       );
+
+      console.log("RES : ", response);
       if (response.data.success) {
         toast.success(response.data.message);
       } else toast.error(response.data.message);
@@ -35,11 +37,12 @@ const Page = () => {
         Cookies.set("token", response?.data?.token);
         Cookies.set("username", response?.data?.username);
         router.push("/message");
+        window.location.reload();
       }
       setFormData({ username: "", password: "" });
       setError("");
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Login failed:", error.message);
       toast.error("Invalid username or password.");
     }
   };

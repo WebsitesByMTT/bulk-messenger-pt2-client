@@ -2,6 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 const token = Cookies.get("token");
 const username = Cookies.get("username");
+
 const headers = {
   headers: {
     "Content-Type": "application/json",
@@ -32,15 +33,20 @@ async function sendMessage(message) {
     return response;
   } catch (error) {
     // console.error("Error", error.message);
-     return error.response.data.errors[0].message;
+    return error.response.data.errors[0].message;
   }
 }
 
-async function getAllAgents() {
+async function getAllAgents({ value }) {
   try {
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/agents`,
-      headers
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${value}`,
+        },
+      }
     );
     return response?.data?.agents;
   } catch (error) {
@@ -61,6 +67,7 @@ async function getAllMessagesByUsername() {
 }
 
 async function getAllMessages() {
+  console.log(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/messages`);
   try {
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/messages`,
@@ -95,7 +102,6 @@ async function createUsers(formData) {
       headers
     );
     return response;
-
   } catch (error) {
     return error.response.data.errors[0].message;
   }
@@ -129,6 +135,35 @@ async function updateAgent(username, agentdata) {
   }
 }
 
+const getAllAgentMessageByUsername = async (agent) => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/messages/${agent}`,
+      headers
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error", error.message);
+  }
+};
+
+const getAllAgentsDetails = async ({ value }) => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/agents`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${value}`,
+        },
+      }
+    );
+    return response?.data?.agents;
+  } catch (error) {
+    console.log("ERROR : ", error);
+  }
+};
+
 export {
   sendMessage,
   getAgentData,
@@ -138,4 +173,6 @@ export {
   createUsers,
   getAllMessages,
   updateAgent,
+  getAllAgentMessageByUsername,
+  getAllAgentsDetails,
 };
