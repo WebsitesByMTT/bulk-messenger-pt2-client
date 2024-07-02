@@ -2,53 +2,48 @@
 import Link from "next/link";
 import LoginImage from "../assets/LoginImage.png";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import userDetails from "@/app/lib/token";
+import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
 const Sidebar = () => {
   const pathname = usePathname();
-  const role = userDetails?.role;
-  const username = userDetails?.username;
-  const route = useRouter();
-  const [menus, setMenus] = useState([]);
+  const router = useRouter();
+  const [user, setUser] = useState(null);
+  const menus = [
+    {
+      id: 1,
+      name: "Messages",
+      link: "/message",
+    },
+    {
+      id: 2,
+      name: "Agents",
+      link: "/agents",
+    },
+    {
+      id: 3,
+      name: "Create",
+      link: "/create",
+    },
+    {
+      id: 4,
+      name: "Trashes",
+      link: "/trashes",
+    },
+  ];
+
+  const handleLogout = () => {
+    Cookies.remove("token");
+    Cookies.remove("currentUser");
+    setUser("");
+    router.push("/login");
+  };
 
   useEffect(() => {
-    if (role === "admin") {
-      setMenus([
-        {
-          id: 1,
-          name: " Message",
-          link: "/message",
-        },
-        {
-          id: 2,
-          name: "Agents",
-          link: "/agents",
-        },
-        {
-          id: 3,
-          name: "Create",
-          link: "/create",
-        },
-      ]);
-    } else if (role === "agent") {
-      setMenus([
-        {
-          id: 1,
-          name: "New message",
-          link: "/newmessage",
-        },
-        {
-          id: 2,
-          name: "History",
-          link: "/message",
-        },
-      ]);
-    }
-  }, [role]);
+    const currentUser = Cookies.get("currentUser");
+    setUser(currentUser);
+  }, []);
 
   return (
     <div
@@ -82,13 +77,13 @@ const Sidebar = () => {
           </svg>
         </Link>
         <ul className="text-white text-xl flex flex-col gap-[5px] mt-12">
-          {menus.map((route, index) => (
+          {menus.map((route) => (
             <Link
-              key={index}
+              key={route.id}
               href={route.link}
               className={` px-2 py-3 ${
                 pathname === route.link ? "bg-white text-black pr-8 pl-4" : ""
-              } rounded-tl-xl rounded-bl-xl transition-all duration-300 ease relative`}
+              } rounded-tl-xl rounded-bl-xl transition-all duration-300 ease relative `}
             >
               <li>
                 <svg
@@ -141,17 +136,10 @@ const Sidebar = () => {
             />
           </div>
           <div>
-            <h3 className="text-lg font-semibold">{username}</h3>
+            <h3 className="text-lg">{user}</h3>
           </div>
         </div>
-        <Link
-          href="/login"
-          className="w-[10%]"
-          onClick={() => {
-            Cookies.remove("token");
-            route.push("/login");
-          }}
-        >
+        <div className=" w-1/6 cursor-pointer" onClick={handleLogout}>
           <svg
             width="100%"
             height="45%"
@@ -167,7 +155,7 @@ const Sidebar = () => {
               strokeLinejoin="round"
             />
           </svg>
-        </Link>
+        </div>
       </div>
     </div>
   );
