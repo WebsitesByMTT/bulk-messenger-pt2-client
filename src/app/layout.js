@@ -1,6 +1,5 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
 import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -24,10 +23,7 @@ export default function RootLayout({ children }) {
           height: "100vh",
         }}
       >
-        <Sidebar />
-        <div className="overflow-y-scroll h-screen flex-1 hideScrollbar min-w-[900px] relative">
-          {children}
-        </div>
+        {children}
         <Toaster position="bottom-center" />
       </body>
     </html>

@@ -12,7 +12,7 @@ export const getCookie = async () => {
 export const getCurrentUser = async () => {
   const token = await getCookie();
   const user = jwt.decode(token);
-  return user;
+  return user.name;
 };
 
 export default async function action() {

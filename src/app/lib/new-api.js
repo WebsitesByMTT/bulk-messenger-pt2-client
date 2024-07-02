@@ -3,7 +3,8 @@ import axios from "axios";
 import { getCookie } from "./server/utils";
 import { revalidatePath } from "next/cache";
 import { config } from "@/utils/config";
-import { data } from "autoprefixer";
+
+export const whoiam = async () => {};
 
 export const createUsers = async (formData) => {
   const token = await getCookie();
@@ -56,6 +57,23 @@ export const getAllTasks = async () => {
   };
   try {
     const response = await axios.get(`${config.server}/api/tasks`, headers);
+
+    return response?.data;
+  } catch (error) {
+    console.log("Error  : ", error.message);
+  }
+};
+
+export const getAllTrashes = async () => {
+  const token = await getCookie();
+  const headers = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  try {
+    const response = await axios.get(`${config.server}/api/trashes`, headers);
 
     return response?.data;
   } catch (error) {

@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { createUsers } from "../lib/new-api";
+import { createUsers } from "../../lib/new-api";
 export const Create = () => {
   const [message, setMessage] = useState({
     username: "",

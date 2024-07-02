@@ -1,6 +1,5 @@
 import Table from "@/components/Table";
-import React from "react";
-import { getAllAgentsMessage, getAllTasks } from "../lib/new-api";
+import { getAllTrashes } from "../../lib/new-api";
 
 const page = async () => {
   const fieldsHeadings = [
@@ -8,6 +7,7 @@ const page = async () => {
     "Agent",
     "Sent To",
     "Status",
+    "Reason",
     "Scheduled At",
     "Created At",
   ];
@@ -16,17 +16,15 @@ const page = async () => {
     "agent",
     "sent_to",
     "status",
+    "reason",
     "scheduledAt",
     "createdAt",
   ];
-  const data = await getAllTasks();
-
-  console.log("Data : ", data);
-
+  const data = await getAllTrashes();
   return (
-    <div className="">
+    <div>
       <Table
-        type="agentMessage"
+        type="trashes"
         data={data}
         fieldsHeadings={fieldsHeadings}
         fieldsData={fieldsData}

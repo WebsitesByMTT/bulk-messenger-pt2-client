@@ -47,6 +47,9 @@ const ViewMessage = ({
       <div className="flex text-lg p-3 items-center gap-2">
         <span className=" font-bold ">Created At : </span> <p>{scheduledAt}</p>
       </div>
+      <div className="flex text-lg p-3 items-center gap-2">
+        <span className=" font-bold ">Reason : </span> <p>{reason}</p>
+      </div>
     </div>
   );
 };

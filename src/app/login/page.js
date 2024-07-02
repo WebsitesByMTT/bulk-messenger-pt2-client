@@ -45,6 +45,7 @@ const Page = () => {
 
       toast.success("Logging in ....");
       Cookies.set("token", token);
+      Cookies.set("currentUser", response.data.username);
       router.push("/message");
     } catch (error) {
       const errorMsg =

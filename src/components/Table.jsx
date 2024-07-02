@@ -7,6 +7,7 @@ import { getAgentAllTasks } from "@/app/lib/new-api";
 import Edit from "./Edit";
 import toast from "react-hot-toast";
 import ViewMessage from "./ViewMessage";
+import { handleFileDownload } from "./Excel";
 
 const MODAL_CONTENT_TYPES = {
   MESSAGES: "messages",
@@ -98,7 +99,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
   };
 
   const handleViewData = (data) => {
-    if (type === "agentMessage") {
+    if (type === "messages" || type === "trashes") {
       console.log(data);
       setSelectedMessage(data);
       setModalContent(MODAL_CONTENT_TYPES.VIEW_MESSAGE);
@@ -190,6 +191,17 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
             <div>
               <span>Total : {fliteredCount}</span>
             </div>
+            <button
+              className=" bg-[#252727] text-base text-white py-2 px-4 rounded-lg"
+              onClick={() =>
+                handleFileDownload(
+                  filteredData,
+                  `${type}-${new Date().toDateString()}`
+                )
+              }
+            >
+              Download
+            </button>
             <input
               type="date"
               name="date"
@@ -205,6 +217,12 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
             <tr className=" border-b border-black">
               {fieldsHeadings.map((heading, index) => {
                 switch (heading) {
+                  case "Message":
+                    return (
+                      <td className="text-base font-bold m-0 text-[#252727] text-left py-4 px-2">
+                        {heading}
+                      </td>
+                    );
                   case "Status":
                     return (
                       <td
@@ -225,7 +243,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                               <option value="inactive">Inactive</option>
                             </>
                           )}
-                          {type === "agentMessage" && (
+                          {(type === "agentMessage" || type === "trashes") && (
                             <>
                               <option value="success">Success</option>
                               <option value="failed">Failed</option>
@@ -335,7 +353,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
 
                       case "reason":
                         return (
-                          <td className="message">
+                          <td className="p-2 text-center text-base">
                             {trimMessage(data[field])}
                           </td>
                         );
@@ -406,7 +424,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
 
                       case "agent":
                         return (
-                          <td className={`p-2 text-left text-base`}>
+                          <td className={`p-2 text-center text-base`}>
                             {data[field]?.name}
                           </td>
                         );
