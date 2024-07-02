@@ -2,7 +2,6 @@
 import Link from "next/link";
 import LoginImage from "../assets/LoginImage.png";
 import Image from "next/image";
-import { getCurrentUser } from "@/app/lib/server/utils";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
@@ -11,41 +10,40 @@ const Sidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState(null);
-  const [menus, setMenus] = useState([
+  const menus = [
     {
       id: 1,
       name: "Messages",
       link: "/message",
     },
-  ]);
-
-  useEffect(() => {
-    (async () => {
-      const user = await getCurrentUser();
-      if (user?.role === "admin") {
-        setMenus([
-          ...menus,
-          {
-            id: 2,
-            name: "Agents",
-            link: "/agents",
-          },
-          {
-            id: 3,
-            name: "Create",
-            link: "/create",
-          },
-        ]);
-      }
-      setUser(user);
-    })();
-  }, []);
+    {
+      id: 2,
+      name: "Agents",
+      link: "/agents",
+    },
+    {
+      id: 3,
+      name: "Create",
+      link: "/create",
+    },
+    {
+      id: 4,
+      name: "Trashes",
+      link: "/trashes",
+    },
+  ];
 
   const handleLogout = () => {
-    console.log("Logout");
     Cookies.remove("token");
+    Cookies.remove("currentUser");
+    setUser("");
     router.push("/login");
   };
+
+  useEffect(() => {
+    const currentUser = Cookies.get("currentUser");
+    setUser(currentUser);
+  }, []);
 
   return (
     <div
@@ -79,13 +77,13 @@ const Sidebar = () => {
           </svg>
         </Link>
         <ul className="text-white text-xl flex flex-col gap-[5px] mt-12">
-          {menus.map((route, index) => (
+          {menus.map((route) => (
             <Link
-              key={index}
+              key={route.id}
               href={route.link}
               className={` px-2 py-3 ${
                 pathname === route.link ? "bg-white text-black pr-8 pl-4" : ""
-              } rounded-tl-xl rounded-bl-xl transition-all duration-300 ease relative`}
+              } rounded-tl-xl rounded-bl-xl transition-all duration-300 ease relative `}
             >
               <li>
                 <svg
@@ -138,7 +136,7 @@ const Sidebar = () => {
             />
           </div>
           <div>
-            <h3 className="text-lg font-semibold">{user?.username}</h3>
+            <h3 className="text-lg">{user}</h3>
           </div>
         </div>
         <div className=" w-1/6 cursor-pointer" onClick={handleLogout}>

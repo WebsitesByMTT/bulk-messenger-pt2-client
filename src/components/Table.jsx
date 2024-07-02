@@ -3,10 +3,11 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import { formatDate, sortData, trimMessage } from "@/app/lib/client/utils";
-import { getAgentAllMessages, updateAgentStatus } from "@/app/lib/new-api";
+import { getAgentAllTasks } from "@/app/lib/new-api";
 import Edit from "./Edit";
 import toast from "react-hot-toast";
 import ViewMessage from "./ViewMessage";
+import { handleFileDownload } from "./Excel";
 
 const MODAL_CONTENT_TYPES = {
   MESSAGES: "messages",
@@ -33,13 +34,15 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
     "Message",
     "Sent To",
     "Status",
+    "Scheduled At",
     "Created At",
   ]);
   const [agentFieldsData, setAgentFieldsData] = useState([
     "message",
     "sent_to",
     "status",
-    "created_at",
+    "scheduledAt",
+    "createdAt",
   ]);
   const [createdAtSortOrder, setCreatedAtSortOrder] = useState("asc");
 
@@ -64,7 +67,8 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
   };
 
   const handleOpenMessagesModal = (user) => {
-    getAgentAllMessages(user?.username)
+    console.log("User : ", user);
+    getAgentAllTasks(user?._id)
       .then((messages) => {
         setAgentMessages(messages);
         setSelectedUser(user);
@@ -95,7 +99,8 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
   };
 
   const handleViewData = (data) => {
-    if (type === "agentMessage") {
+    if (type === "messages" || type === "trashes") {
+      console.log(data);
       setSelectedMessage(data);
       setModalContent(MODAL_CONTENT_TYPES.VIEW_MESSAGE);
       setIsModalOpen(true);
@@ -186,6 +191,17 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
             <div>
               <span>Total : {fliteredCount}</span>
             </div>
+            <button
+              className=" bg-[#252727] text-base text-white py-2 px-4 rounded-lg"
+              onClick={() =>
+                handleFileDownload(
+                  filteredData,
+                  `${type}-${new Date().toDateString()}`
+                )
+              }
+            >
+              Download
+            </button>
             <input
               type="date"
               name="date"
@@ -201,6 +217,12 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
             <tr className=" border-b border-black">
               {fieldsHeadings.map((heading, index) => {
                 switch (heading) {
+                  case "Message":
+                    return (
+                      <td className="text-base font-bold m-0 text-[#252727] text-left py-4 px-2">
+                        {heading}
+                      </td>
+                    );
                   case "Status":
                     return (
                       <td
@@ -221,7 +243,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                               <option value="inactive">Inactive</option>
                             </>
                           )}
-                          {type === "agentMessage" && (
+                          {(type === "agentMessage" || type === "trashes") && (
                             <>
                               <option value="success">Success</option>
                               <option value="failed">Failed</option>
@@ -291,9 +313,13 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
           </thead>
           <tbody>
             {filteredData.map((data, idx) => {
-              const { formattedDate, formattedTime } = formatDate(
-                data.created_at
-              );
+              const { formattedDate: deleteDate, formattedTime: deleteTime } =
+                formatDate(data.createdAt);
+
+              const {
+                formattedDate: scheduledDate,
+                formattedTime: scheduledTime,
+              } = formatDate(data.scheduledAt);
               return (
                 <tr
                   key={idx}
@@ -302,19 +328,36 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                 >
                   {fieldsData.map((field) => {
                     switch (field) {
-                      case "created_at":
+                      case "createdAt":
                         return (
-                          <td className="p-2  text-center text-base">
-                            <p>{formattedTime}</p>
-                            <p className=" text-sm">{formattedDate}</p>
+                          <td className=" text-center">
+                            <p className=" text-base">{deleteTime}</p>
+                            <p className=" text-xs">{deleteDate}</p>
                           </td>
                         );
+
+                      case "scheduledAt":
+                        return (
+                          <td className=" text-center">
+                            <p className=" text-base">{scheduledTime}</p>
+                            <p className=" text-xs">{scheduledDate}</p>
+                          </td>
+                        );
+
                       case "message":
                         return (
-                          <td className={`p-2 text-center text-base`}>
+                          <td className="p-2 text-left text-base">
                             {trimMessage(data[field])}
                           </td>
                         );
+
+                      case "reason":
+                        return (
+                          <td className="p-2 text-center text-base">
+                            {trimMessage(data[field])}
+                          </td>
+                        );
+
                       case "status":
                         return (
                           <td className={`p-2  text-center text-base`}>
@@ -379,6 +422,12 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                           </td>
                         );
 
+                      case "agent":
+                        return (
+                          <td className={`p-2 text-center text-base`}>
+                            {data[field]?.name}
+                          </td>
+                        );
                       default:
                         return (
                           <td className={`p-2 text-center text-base`}>
@@ -406,7 +455,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
           )}
 
           {modalContent === MODAL_CONTENT_TYPES.VIEW_MESSAGE && (
-            <ViewMessage message={selectedMessage} />
+            <ViewMessage {...selectedMessage} />
           )}
         </Modal>
       </motion.div>

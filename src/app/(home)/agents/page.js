@@ -1,14 +1,13 @@
 import Table from "@/components/Table";
 import { cookies } from "next/headers";
 import React from "react";
-import { getAllAgents } from "../lib/new-api";
-import { getCurrentUser } from "../lib/server/utils";
+import { getAllAgents } from "../../lib/new-api";
+import { getCurrentUser } from "../../lib/server/utils";
 
 const page = async () => {
   const data = await getAllAgents();
-  const user = await getCurrentUser();
+
   const fieldsHeadings = [
-    "ID",
     "Name",
     "Username",
     "Status",
@@ -17,18 +16,17 @@ const page = async () => {
     "Edit",
   ];
   const fieldsData = [
-    "id",
     "name",
     "username",
     "status",
-    "created_at",
+    "createdAt",
     "messages",
     "edit",
   ];
 
   return (
     <Table
-      type="agentTable"
+      type="agents"
       data={data}
       fieldsHeadings={fieldsHeadings}
       fieldsData={fieldsData}

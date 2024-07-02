@@ -186,6 +186,11 @@ input::-webkit-datetime-edit-year-field:focus {
   color: #c57600;
 }
 
+.status-scheduled {
+  background: #ebff004d;
+  color: #c57600;
+}
+
 .loading svg {
   width: 3.25em;
   transform-origin: center;

@@ -4,6 +4,7 @@ import {
 } from "@/app/lib/new-api";
 import action from "@/app/lib/server/utils";
 import axios from "axios";
+import { revalidatePath } from "next/cache";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
@@ -28,53 +29,64 @@ const Edit = ({ user, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Check if password and passwordConfirm are the same
-    if (formState.password !== formState.passwordConfirm) {
-      console.error("Passwords do not match.");
-      // Handle the error, e.g., show an error message
-      return;
-    }
-
-    const updatedFields = {};
-
-    Object.keys(formState).forEach((key) => {
-      if (formState[key] !== user[key]) {
-        updatedFields[key] = formState[key];
+    try {
+      // Check if password and passwordConfirm are the same
+      if (formState.password !== formState.passwordConfirm) {
+        console.error("Passwords do not match.");
+        // Handle the error, e.g., show an error message
+        return;
       }
-    });
 
-    // Remove passwordConfirm from the fields to be sent
-    delete updatedFields.passwordConfirm;
-    console.log(updatedFields, "updated");
+      const updatedFields = {};
 
-    const response = await updateAgentByUsername(user.username, updatedFields);
-    console.log("RESP : ", response);
+      Object.keys(formState).forEach((key) => {
+        if (formState[key] !== user[key]) {
+          updatedFields[key] = formState[key];
+        }
+      });
 
-    if (response.success) {
-      toast.success(response.message);
-      await action();
-      // onClose();
-    } else {
-      toast.error(response.message);
+      // Remove passwordConfirm from the fields to be sent
+      delete updatedFields.passwordConfirm;
+      console.log(updatedFields, "updated");
+
+      const response = await updateAgentByUsername(
+        user.username,
+        updatedFields
+      );
+      console.log("RESP : ", response);
+
+      if (response.success) {
+        toast.success(response.message);
+        await action();
+        // onClose();
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      onClose();
     }
   };
 
-  const handleDeleteUser = (username) => {
-    console.log("DDLETE : ", username);
-    deleteAgentByUsername(username)
-      .then((res) => {
-        console.log(res);
-        if (res.success) {
-          toast.success(res.message);
-          onClose();
-        } else {
-          toast.error(res.message);
-        }
-      })
-      .catch((error) => {
-        console.log("Failed to Delete : ", username);
-      });
+  const handleDeleteUser = async (username) => {
+    console.log("DELETE:", username);
+    try {
+      const res = await deleteAgentByUsername(username);
+      console.log(res);
+
+      if (res.success) {
+        toast.success(res.message);
+        // Add any additional logic, e.g., closing a modal or refreshing a list
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {
+      console.log("Failed to delete:", error.message);
+      toast.error(error.message);
+    } finally {
+      onClose();
+    }
   };
 
   return (

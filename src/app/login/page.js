@@ -6,6 +6,7 @@ import LoginImage from "../../assets/LoginImage.png";
 import Image from "next/image";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import { config } from "@/utils/config";
 
 const Page = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -20,30 +21,39 @@ const Page = () => {
   };
 
   const router = useRouter();
-  //login api
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/users/login`,
+        `${config.server}/api/users/login`,
         formData
       );
 
-      console.log("RES : ", response);
-      if (response.data.success) {
-        toast.success(response.data.message);
-      } else toast.error(response.data.message);
-      if (response?.data?.token) {
-        Cookies.set("token", response?.data?.token);
-        Cookies.set("username", response?.data?.username);
-        router.push("/message");
-        window.location.reload();
+      if (response.status !== 200) {
+        throw new Error(response.data.message);
       }
+
+      const { role, token } = response.data;
+
+      if (role !== "admin") {
+        toast.error("Access denied: You do not have admin privileges.");
+        setFormData({ username: "", password: "" });
+        setError("");
+        return;
+      }
+
+      toast.success("Logging in ....");
+      Cookies.set("token", token);
+      Cookies.set("currentUser", response.data.username);
+      router.push("/message");
+    } catch (error) {
+      const errorMsg =
+        error?.response?.data.message || "Invalid Username or Password";
+      toast.error(errorMsg);
+    } finally {
       setFormData({ username: "", password: "" });
       setError("");
-    } catch (error) {
-      console.error("Login failed:", error.message);
-      toast.error("Invalid username or password.");
     }
   };
 
