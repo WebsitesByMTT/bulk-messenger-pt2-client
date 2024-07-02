@@ -97,12 +97,13 @@ async function createUsers(formData) {
     }
 
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/users/register`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/register`,
       formData,
       headers
     );
     return response;
   } catch (error) {
+    console.log(error);
     return error.response.data.errors[0].message;
   }
 }

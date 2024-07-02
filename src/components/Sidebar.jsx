@@ -17,29 +17,17 @@ const Sidebar = () => {
       name: "Messages",
       link: "/message",
     },
+    {
+      id: 2,
+      name: "Agents",
+      link: "/agents",
+    },
+    {
+      id: 3,
+      name: "Create",
+      link: "/create",
+    },
   ]);
-
-  useEffect(() => {
-    (async () => {
-      const user = await getCurrentUser();
-      if (user?.role === "admin") {
-        setMenus([
-          ...menus,
-          {
-            id: 2,
-            name: "Agents",
-            link: "/agents",
-          },
-          {
-            id: 3,
-            name: "Create",
-            link: "/create",
-          },
-        ]);
-      }
-      setUser(user);
-    })();
-  }, []);
 
   const handleLogout = () => {
     console.log("Logout");

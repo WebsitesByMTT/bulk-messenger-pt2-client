@@ -6,9 +6,9 @@ import { getCurrentUser } from "../lib/server/utils";
 
 const page = async () => {
   const data = await getAllAgents();
-  const user = await getCurrentUser();
+
+  console.log("Agents : ", data);
   const fieldsHeadings = [
-    "ID",
     "Name",
     "Username",
     "Status",
@@ -17,11 +17,10 @@ const page = async () => {
     "Edit",
   ];
   const fieldsData = [
-    "id",
     "name",
     "username",
     "status",
-    "created_at",
+    "createdAt",
     "messages",
     "edit",
   ];

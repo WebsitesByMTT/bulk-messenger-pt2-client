@@ -1,22 +1,27 @@
 import Table from "@/components/Table";
 import React from "react";
-import { getAgentAllMessages, getAllAgentsMessage } from "../lib/new-api";
-import { getCurrentUser } from "../lib/server/utils";
+import { getAllAgentsMessage, getAllTasks } from "../lib/new-api";
 
 const page = async () => {
-  const user = await getCurrentUser();
-  const fieldsHeadings = ["Message", "Sent To", "Status", "Created At"];
-  const fieldsData = ["message", "sent_to", "status", "created_at"];
-  let data = await getAllAgentsMessage();
+  const fieldsHeadings = [
+    "Message",
+    "Agent",
+    "Sent To",
+    "Status",
+    "Scheduled At",
+    "Created At",
+  ];
+  const fieldsData = [
+    "message",
+    "agent",
+    "sent_to",
+    "status",
+    "scheduledAt",
+    "createdAt",
+  ];
+  const data = await getAllTasks();
 
-  if (user.role === "admin") {
-    fieldsHeadings.splice(fieldsHeadings.length - 2, 0, "Agent");
-    fieldsData.splice(fieldsData.length - 2, 0, "agent");
-    data = await getAllAgentsMessage();
-  } else {
-    data = await getAgentAllMessages(user.username);
-  }
-
+  console.log("Data : ", data);
 
   return (
     <div className="">

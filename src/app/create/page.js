@@ -1,8 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { createUsers } from "../lib/api";
 import toast from "react-hot-toast";
+import { createUsers } from "../lib/new-api";
 export const Create = () => {
   const [message, setMessage] = useState({
     username: "",
@@ -23,17 +23,20 @@ export const Create = () => {
 
   async function handleSend(e) {
     e.preventDefault();
-    const response = await createUsers(message);
-    if (response?.data?.success) {
-      toast.success(response.data.message);
-    } else toast.error(response);
-    setMessage({
-      username: "",
-      name: "",
-      password: "",
-      role: "agent",
-      keys: "",
-    });
+    try {
+      const response = await createUsers(message);
+      toast.success(response);
+
+      setMessage({
+        username: "",
+        name: "",
+        password: "",
+        role: "agent",
+        keys: "",
+      });
+    } catch (error) {
+      toast.error(error.message);
+    }
   }
   return (
     <motion.div
