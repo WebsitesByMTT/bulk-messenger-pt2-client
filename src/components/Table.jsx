@@ -45,6 +45,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
     "createdAt",
   ]);
   const [createdAtSortOrder, setCreatedAtSortOrder] = useState("asc");
+  const [scheduledAtSortOrder, setScheduledAtSortOrder] = useState("asc");
 
   useEffect(() => {
     setTableData(data);
@@ -237,13 +238,13 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                             {heading}
                           </option>
                           <option value="all">All</option>
-                          {type === "agentTable" && (
+                          {type === "agents" && (
                             <>
                               <option value="active">Active</option>
                               <option value="inactive">Inactive</option>
                             </>
                           )}
-                          {(type === "agentMessage" || type === "trashes") && (
+                          {(type === "messages" || type === "trashes") && (
                             <>
                               <option value="success">Success</option>
                               <option value="failed">Failed</option>
@@ -260,7 +261,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                         className={`text-base font-bold m-0 text-[#252727] text-center py-4 px-2 cursor-pointer`}
                         onClick={() =>
                           sortData(
-                            "created_at",
+                            "createdAt",
                             tableData,
                             filteredData,
                             setFilteredData,
@@ -286,6 +287,52 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
                             style={{
                               transform:
                                 createdAtSortOrder === "asc"
+                                  ? "rotate(0deg)"
+                                  : "rotate(180deg)",
+                              transition: "transform 0.3s ease-in-out",
+                            }}
+                          >
+                            <path d="m3 16 4 4 4-4" />
+                            <path d="M7 20V4" />
+                            <path d="m21 8-4-4-4 4" />
+                            <path d="M17 4v16" />
+                          </svg>
+                        </div>
+                      </td>
+                    );
+
+                  case "Scheduled At":
+                    return (
+                      <td
+                        className={`text-base font-bold m-0 text-[#252727] text-center py-4 px-2 cursor-pointer`}
+                        onClick={() =>
+                          sortData(
+                            "scheduledAt",
+                            tableData,
+                            filteredData,
+                            setFilteredData,
+                            scheduledAtSortOrder,
+                            setScheduledAtSortOrder
+                          )
+                        }
+                      >
+                        <div className=" flex items-center justify-center gap-2">
+                          {heading}
+
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className={`${scheduledAtSortOrder}`}
+                            style={{
+                              transform:
+                                scheduledAtSortOrder === "asc"
                                   ? "rotate(0deg)"
                                   : "rotate(180deg)",
                               transition: "transform 0.3s ease-in-out",
