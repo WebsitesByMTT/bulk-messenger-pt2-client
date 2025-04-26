@@ -107,7 +107,7 @@ const Edit = ({ user, onClose }) => {
                 name="name"
                 placeholder="John"
                 autoComplete="given-name"
-                class="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                class="block w-full p-3 mt-2 placeholder:text-gray-900 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
                 value={formState.name}
                 onChange={handleChange}
               />
@@ -125,7 +125,7 @@ const Edit = ({ user, onClose }) => {
                 name="username"
                 placeholder="Doe"
                 autoComplete="family-name"
-                class="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+                class="block w-full p-3 mt-2 text-gray-700 placeholder:text-gray-900 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
                 value={formState.username}
                 onChange={handleChange}
               />
@@ -144,7 +144,7 @@ const Edit = ({ user, onClose }) => {
             name="password"
             placeholder="********"
             autoComplete="new-password"
-            class="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+            class="block w-full p-3 mt-2 text-gray-700 bg-gray-200 placeholder:text-gray-900 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
             value={formState.password}
             onChange={handleChange}
           />
@@ -160,7 +160,7 @@ const Edit = ({ user, onClose }) => {
             name="passwordConfirm"
             placeholder="********"
             autoComplete="new-password"
-            class="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+            class="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none placeholder:text-gray-900 focus:outline-none focus:bg-gray-300 focus:shadow-inner"
             value={formState.passwordConfirm}
             onChange={handleChange}
           />
@@ -174,7 +174,7 @@ const Edit = ({ user, onClose }) => {
           <select
             name="status"
             id="status"
-            className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+            className="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none text-gray-900 focus:bg-gray-300 focus:shadow-inner"
             value={formState.status}
             onChange={handleChange}
           >
@@ -183,7 +183,7 @@ const Edit = ({ user, onClose }) => {
           </select>
           <button
             type="submit"
-            class="w-full py-3 mt-6 font-medium tracking-widest text-white uppercase bg-black shadow-lg focus:outline-none hover:bg-gray-900 hover:shadow-none"
+            class="w-full py-3 mt-6 hover:bg-gray-700 font-medium tracking-widest text-white uppercase bg-black shadow-lg focus:outline-none  hover:shadow-none"
           >
             Update
           </button>

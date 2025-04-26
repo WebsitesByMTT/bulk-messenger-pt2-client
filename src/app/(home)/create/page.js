@@ -50,7 +50,7 @@ export const Create = () => {
           Name
         </label>
         <input
-          className="border-2 border-[#8C8C8C] rounded-md p-2 resize-none"
+          className="border-2 placeholder:text-gray-900 border-[#8C8C8C] rounded-md p-2 resize-none"
           name="name"
           placeholder="Enter Name"
           required
@@ -61,7 +61,7 @@ export const Create = () => {
           Username
         </label>
         <input
-          className="border-2 border-[#8C8C8C] rounded-md p-2 resize-none"
+          className="border-2 border-[#8C8C8C] placeholder:text-gray-900 rounded-md p-2 resize-none"
           name="username"
           placeholder="e.g, Rahul"
           required
@@ -72,7 +72,7 @@ export const Create = () => {
           Password
         </label>
         <input
-          className="border-2 border-[#8C8C8C] rounded-md p-2"
+          className="border-2 border-[#8C8C8C] rounded-md p-2 placeholder:text-gray-900"
           name="password"
           placeholder="*********"
           type="Password"
@@ -82,7 +82,7 @@ export const Create = () => {
         />
         {message.role === "admin" && (
           <input
-            className="border-2 border-[#8C8C8C] rounded-md p-2 mt-4"
+            className="border-2 border-[#8C8C8C] rounded-md p-2 mt-4 placeholder:text-gray-900"
             name="keys"
             placeholder="API key"
             required
@@ -91,7 +91,7 @@ export const Create = () => {
           />
         )}
         <select
-          className="text-sm mt-6 w-fit border-[#8C8C8C] border-[1px] p-1 rounded-2xl"
+          className="text-sm mt-6 w-fit border-[#8C8C8C] border-[1px] p-1 rounded-2xl text-gray-900"
           onChange={handleAgentMessage}
           name="role"
           value={message.role}

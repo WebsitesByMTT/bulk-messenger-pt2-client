@@ -27,7 +27,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
   const [selectedMessage, setSelectedMessage] = useState({});
 
   const [searchInput, setSearchInput] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState({ startDate: '', endDate: '' });
   const [selectedStatus, setSelectedStatus] = useState("all");
 
   const [agentFieldsHeadings, setAgentFieldsHeadings] = useState([
@@ -55,7 +55,7 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
   useEffect(() => {
     const newData = filterDataBySearch(data);
     setFilteredData(newData);
-  }, [searchInput]);
+  }, [searchInput, data]);
 
   useEffect(() => {
     setFilteredCount(filteredData.length);
@@ -68,7 +68,6 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
   };
 
   const handleOpenMessagesModal = (user) => {
-    console.log("User : ", user);
     getAgentAllTasks(user?._id)
       .then((messages) => {
         setAgentMessages(messages);
@@ -91,13 +90,21 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
   };
 
   const filterDataBySearch = (data) => {
-    if (!searchInput) return data;
-    return data.filter((item) =>
+    if (!searchInput || !searchInput.trim()) return data;
+
+    const query = searchInput.toLowerCase();
+
+    const filtered = data.filter((item) =>
       Object.values(item).some((value) =>
-        String(value).toLowerCase().includes(searchInput.toLowerCase())
+        String(value ?? '') // handles null or undefined
+          .toLowerCase()
+          .includes(query)
       )
     );
+
+    return filtered.length > 0 ? filtered : [];
   };
+
 
   const handleViewData = (data) => {
     if (type === "messages" || type === "trashes") {
@@ -127,16 +134,18 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
       );
     }
 
+    console.log(selectedDate, "selected Data")
     // Apply date filter
-    if (selectedDate) {
-      console.log("SELECTED DATA : ", selectedDate);
-      filteredData = filteredData.filter(
-        (item) =>
-          new Date(item.created_at).toDateString() ===
-          new Date(selectedDate).toDateString()
-      );
-    }
+    if (selectedDate?.startDate && selectedDate?.endDate) {
+      const start = new Date(selectedDate.startDate).setHours(0, 0, 0, 0);
+      const end = new Date(selectedDate.endDate).setHours(23, 59, 59, 999);
 
+      filteredData = filteredData.filter((item) => {
+        const createdAt = new Date(item.createdAt).getTime();
+        return createdAt >= start && createdAt <= end;
+      });
+      console.log(filteredData, "filtered data")
+    }
     return filteredData;
   };
 
@@ -150,7 +159,8 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
   };
 
   const handleDateChange = (e) => {
-    setSelectedDate(e.target.value);
+    const { name, value } = e.target;
+    setSelectedDate({ ...selectedDate, [name]: value });
   };
 
   const handleSearchInputChange = (e) => {
@@ -165,8 +175,8 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="flex justify-between items-center">
-          <div className="flex gap-3 px-4 py-2 rounded-3xl bg-[whitesmoke] w-1/2">
+        <div className="flex sticky top-0 pt-[1.5rem] pb-[1rem] bg-white justify-between items-center">
+          <div className="flex gap-3 px-4 py-2 rounded-3xl bg-gray-200 w-1/2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -203,14 +213,29 @@ const Table = ({ type, data, fieldsHeadings, fieldsData }) => {
             >
               Download
             </button>
-            <input
-              type="date"
-              name="date"
-              onChange={handleDateChange}
-              // defaultValue={currentDate}
-              max={currentDate}
-              className="border-[#8C8C8C] border p-1 rounded-lg"
-            />
+            <div>
+              <div>Start Date</div>
+              <input
+                type="date"
+                name="startDate"
+                onChange={handleDateChange}
+                // defaultValue={currentDate}
+                max={currentDate}
+                className="border-[#8C8C8C] border p-1 rounded-lg"
+              />
+            </div>
+            <div>
+              <div>End Date</div>
+              <input
+                type="date"
+                name="endDate"
+                onChange={handleDateChange}
+                // defaultValue={currentDate}
+                max={currentDate}
+                className="border-[#8C8C8C] border p-1 rounded-lg"
+              />
+            </div>
+
           </div>
         </div>
         <table className=" w-ful">
